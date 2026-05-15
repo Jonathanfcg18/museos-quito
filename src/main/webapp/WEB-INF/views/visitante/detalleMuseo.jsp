@@ -162,9 +162,10 @@
                 <div class="detalle-card reserva-card">
                     <h2>🎫 Reservar Visita</h2>
                     <p>Asegura tu ingreso sin hacer filas reservando en línea.</p>
-                    <button class="btn btn-primary btn-full" disabled title="Próximamente">
-                        Reservar Ahora (próximamente)
-                    </button>
+                    <a href="${pageContext.request.contextPath}/museos/horarios?museoId=${museo.id}"
+                       class="btn btn-primary btn-full">
+                        Reservar Ahora →
+                    </a>
                 </div>
 
                 <!-- Volver -->

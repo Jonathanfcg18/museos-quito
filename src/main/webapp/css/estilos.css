@@ -397,3 +397,195 @@ img { max-width: 100%; display: block; }
     .brand-title { font-size: 0.95rem; }
     .navbar-links { gap: 0.75rem; }
 }
+
+/* ── HU2: Selección de horario ── */
+.reserva-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 2rem;
+    align-items: start;
+    padding-bottom: 3rem;
+}
+
+.franjas-panel h2,
+.form-reserva-panel h2 {
+    font-size: 1.2rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.franjas-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.franja-item {
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface);
+    transition: all 0.2s;
+}
+
+.franja-disponible {
+    cursor: pointer;
+}
+
+.franja-disponible:hover {
+    border-color: var(--primary);
+    background: #fdf6ee;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+}
+
+.franja-seleccionada {
+    border-color: var(--primary);
+    background: #fdf6ee;
+    box-shadow: 0 0 0 3px rgba(139,69,19,0.2);
+}
+
+.franja-agotada {
+    opacity: 0.55;
+    cursor: not-allowed;
+    background: #f9f9f9;
+}
+
+.franja-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.franja-fecha { font-weight: 600; font-size: 0.95rem; }
+.franja-hora  { font-size: 0.88rem; color: var(--text-muted); }
+
+.cupos-disponibles { color: var(--success); font-weight: 600; font-size: 0.88rem; }
+.cupos-agotados    { color: var(--error-color); font-weight: 700; font-size: 0.88rem; }
+
+/* Formulario de reserva */
+.form-reserva-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 80px;
+}
+
+.seleccion-resumen {
+    background: #fdf6ee;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.92rem;
+    line-height: 1.8;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.35rem;
+    color: var(--text);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+}
+
+/* ── HU2: Confirmación de reserva ── */
+.confirmacion-box {
+    max-width: 560px;
+    margin: 3rem auto;
+    text-align: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem 2rem;
+    box-shadow: var(--shadow);
+}
+
+.confirmacion-icono {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.confirmacion-box h1 {
+    font-size: 1.8rem;
+    color: var(--success);
+    margin-bottom: 0.5rem;
+}
+
+.confirmacion-sub {
+    color: var(--text-muted);
+    margin-bottom: 1.75rem;
+}
+
+.confirmacion-detalle {
+    text-align: left;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.conf-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.65rem 1rem;
+    font-size: 0.92rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.conf-row:last-child { border-bottom: none; }
+
+.conf-label { color: var(--text-muted); font-weight: 500; }
+.conf-valor { font-weight: 600; }
+
+.codigo-valor {
+    font-family: monospace;
+    background: #f0f0f0;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    color: var(--primary);
+    font-size: 1rem;
+}
+
+.confirmacion-nota {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 1.75rem;
+}
+
+.confirmacion-acciones {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .reserva-layout { grid-template-columns: 1fr; }
+    .form-reserva-panel { position: static; }
+    .confirmacion-acciones { flex-direction: column; }
+}

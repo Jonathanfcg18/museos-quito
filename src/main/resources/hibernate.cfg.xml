@@ -19,8 +19,12 @@
         <property name="hibernate.connection.pool_size">5</property>
 
         <!-- Entidades del sistema -->
+        <mapping class="com.webapp.museosquito.model.FranjaReserva"/>
+        <mapping class="com.webapp.museosquito.model.Reserva"/>
         <mapping class="com.webapp.museosquito.model.Museo"/>
         <mapping class="com.webapp.museosquito.model.Exposicion"/>
         <mapping class="com.webapp.museosquito.model.HorarioMuseo"/>
+
+        
     </session-factory>
 </hibernate-configuration>

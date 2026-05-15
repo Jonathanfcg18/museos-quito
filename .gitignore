@@ -1,0 +1,27 @@
+# Maven build output
+target/
+
+# Compiled Java classes
+*.class
+
+# Packaged artifacts
+*.war
+*.jar
+*.ear
+
+# SQLite database (se genera automáticamente al arrancar)
+*.db
+
+# IDEs
+.idea/
+*.iml
+.vscode/settings.json
+.vscode/
+
+# OS artifacts
+nul
+.DS_Store
+Thumbs.db
+
+# Maven wrapper jar (opcional: algunos equipos sí lo suben)
+# .mvn/wrapper/maven-wrapper.jar

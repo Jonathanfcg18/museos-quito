@@ -40,7 +40,7 @@ public class DataSeeder {
                     "Historia y Arte",
                     "(02) 222-3258",
                     "https://www.museonacional.gob.ec",
-                    "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Museo_Nacional_del_Ecuador.jpg/800px-Museo_Nacional_del_Ecuador.jpg",
+                    "https://commons.wikimedia.org/wiki/Special:FilePath/Museo_Nacional_del_Ecuador_(MUNA),_ingreso.jpg",
                     2.00, 1.00, 1.00));
             agregarHorario(museoNacional, "Martes - Viernes", "08:30", "16:30", false);
             agregarHorario(museoNacional, "Sábado, Domingo y Feriados", "10:00", "16:00", false);
@@ -61,7 +61,7 @@ public class DataSeeder {
                     "Arte",
                     "(02) 244-8492",
                     "https://www.capilladelhombre.com",
-                    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Capilla_del_Hombre.jpg/800px-Capilla_del_Hombre.jpg",
+                    "https://commons.wikimedia.org/wiki/Special:FilePath/Centro_cultural_iberoamericano_%22Capilla_del_Hombre%22_(6267211714).jpg",
                     8.00, 4.50, 4.50));
             agregarHorario(capillaHombre, "Martes - Sábado", "09:00", "17:30", false);
             agregarHorario(capillaHombre, "Domingo", "10:00", "13:30", false);
@@ -76,7 +76,7 @@ public class DataSeeder {
                     "Arte Precolombino",
                     "(02) 228-0940",
                     "https://www.alabado.org",
-                    "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Museo_Casa_del_Alabado.jpg/800px-Museo_Casa_del_Alabado.jpg",
+                    "https://commons.wikimedia.org/wiki/Special:FilePath/(Museo_Casa_del_Alabado)_1st_floor,_courtyard_stone_floor_(pic.a1a).JPG",
                     6.00, 3.00, 3.00));
             agregarHorario(alabado, "Miércoles - Domingo", "09:00", "17:00", false);
             agregarHorario(alabado, "Lunes y Martes", "", "", true);
@@ -90,7 +90,7 @@ public class DataSeeder {
                     "Ciencia y Naturaleza",
                     "(02) 257-2022",
                     "https://www.yakumuseo.gob.ec",
-                    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Yaku_museo_agua.jpg/800px-Yaku_museo_agua.jpg",
+                    "https://commons.wikimedia.org/wiki/Special:FilePath/Exposición_Zoom_un_viajje_en_el_agua.jpg",
                     3.00, 2.00, 2.00));
             agregarHorario(yaku, "Martes - Viernes", "09:00", "17:30", false);
             agregarHorario(yaku, "Sábado y Domingo", "10:00", "17:30", false);
@@ -104,7 +104,7 @@ public class DataSeeder {
                     "Arte Colonial",
                     "(02) 228-1124",
                     "",
-                    "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/San_Francisco_Church_Quito.jpg/800px-San_Francisco_Church_Quito.jpg",
+                    "https://commons.wikimedia.org/wiki/Special:FilePath/Capilla_de_Cantuña_(Iglesia_de_San_Francisco,_Quito)_pic._a1_(interior).jpg",
                     2.50, 0.50, 1.50));
             agregarHorario(sanFrancisco, "Lunes - Sábado", "09:00", "17:00", false);
             agregarHorario(sanFrancisco, "Domingo", "09:00", "12:00", false);
@@ -117,7 +117,7 @@ public class DataSeeder {
                     "Arte Contemporáneo",
                     "(02) 295-0272",
                     "",
-                    "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Centro_Cultural_Metropolitano_Quito.jpg/800px-Centro_Cultural_Metropolitano_Quito.jpg",
+                    "https://commons.wikimedia.org/wiki/Special:FilePath/Centro_Cultural_Metropolitano_(pic._a028).JPG",
                     0.00, 0.00, 0.00));
             agregarHorario(ccm, "Martes - Viernes", "10:30", "17:30", false);
             agregarHorario(ccm, "Sábado y Domingo", "10:00", "17:00", false);
@@ -132,7 +132,7 @@ public class DataSeeder {
                     "Ciencia y Cultura",
                     "(02) 239-4122",
                     "https://www.museointinan.com.ec",
-                    "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Inti%C3%B1an_Solar_Museum.jpg/800px-Inti%C3%B1an_Solar_Museum.jpg",
+                    "https://commons.wikimedia.org/wiki/Special:FilePath/Ecuador_SanAntoniodePichincha_MuseoIntiNan.JPG",
                     5.00, 3.00, 3.00));
             agregarHorario(intinan, "Lunes - Domingo", "09:00", "17:00", false);
 
@@ -145,7 +145,7 @@ public class DataSeeder {
                     "Historia",
                     "(02) 228-3882",
                     "https://www.museociudadquito.gob.ec",
-                    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Museo_de_la_Ciudad_Quito.jpg/800px-Museo_de_la_Ciudad_Quito.jpg",
+                    "https://commons.wikimedia.org/wiki/Special:FilePath/Museo_de_la_Ciudad,_Quito_(exterior_sign).JPG",
                     3.00, 1.50, 1.50));
             agregarHorario(museoCiudad, "Martes - Domingo", "09:30", "17:00", false);
             agregarHorario(museoCiudad, "Lunes", "", "", true);

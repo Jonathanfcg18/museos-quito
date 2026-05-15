@@ -19,8 +19,12 @@
         </div>
     </div>
     <nav class="navbar-links">
-        <a href="${pageContext.request.contextPath}/" class="${currentPage == 'inicio' ? 'active' : ''}">Inicio</a>
-        <a href="${pageContext.request.contextPath}/museos" class="${currentPage == 'museos' ? 'active' : ''}">Museos</a>
+        <a href="${pageContext.request.contextPath}/"
+           class="${currentPage == 'inicio' ? 'active' : ''}">Inicio</a>
+        <a href="${pageContext.request.contextPath}/museos"
+           class="${currentPage == 'museos' ? 'active' : ''}">Museos</a>
+        <a href="${pageContext.request.contextPath}/reservas/mis-reservas"
+           class="${currentPage == 'misreservas' ? 'active' : ''}">Mis Reservas</a>
     </nav>
 </header>
 

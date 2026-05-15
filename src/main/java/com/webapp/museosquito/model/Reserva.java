@@ -28,36 +28,85 @@ public class Reserva {
     private int cantidadPersonas;
 
     @Column(nullable = false)
-    private String fechaRegistro;   // "2026-05-15"
+    private String fechaRegistro; // "2026-05-15"
 
     @Column(nullable = false)
     private String codigoConfirmacion;
 
-    public Reserva() {}
+    @Column(nullable = false)
+    private boolean activa;
 
-    public Reserva(FranjaReserva franja, String nombreVisitante,
-                   String emailVisitante, int cantidadPersonas,
-                   String fechaRegistro, String codigoConfirmacion) {
-        this.franja              = franja;
-        this.nombreVisitante     = nombreVisitante;
-        this.emailVisitante      = emailVisitante;
-        this.cantidadPersonas    = cantidadPersonas;
-        this.fechaRegistro       = fechaRegistro;
-        this.codigoConfirmacion  = codigoConfirmacion;
+    public Reserva() {
     }
 
-    public int getId()                                      { return id; }
-    public void setId(int id)                               { this.id = id; }
-    public FranjaReserva getFranja()                        { return franja; }
-    public void setFranja(FranjaReserva f)                  { this.franja = f; }
-    public String getNombreVisitante()                      { return nombreVisitante; }
-    public void setNombreVisitante(String n)                { this.nombreVisitante = n; }
-    public String getEmailVisitante()                       { return emailVisitante; }
-    public void setEmailVisitante(String e)                 { this.emailVisitante = e; }
-    public int getCantidadPersonas()                        { return cantidadPersonas; }
-    public void setCantidadPersonas(int c)                  { this.cantidadPersonas = c; }
-    public String getFechaRegistro()                        { return fechaRegistro; }
-    public void setFechaRegistro(String f)                  { this.fechaRegistro = f; }
-    public String getCodigoConfirmacion()                   { return codigoConfirmacion; }
-    public void setCodigoConfirmacion(String c)             { this.codigoConfirmacion = c; }
+    public Reserva(FranjaReserva franja, String nombreVisitante,
+            String emailVisitante, int cantidadPersonas,
+            String fechaRegistro, String codigoConfirmacion) {
+        this.franja = franja;
+        this.nombreVisitante = nombreVisitante;
+        this.emailVisitante = emailVisitante;
+        this.cantidadPersonas = cantidadPersonas;
+        this.fechaRegistro = fechaRegistro;
+        this.codigoConfirmacion = codigoConfirmacion;
+        this.activa = true;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public FranjaReserva getFranja() {
+        return franja;
+    }
+
+    public void setFranja(FranjaReserva f) {
+        this.franja = f;
+    }
+
+    public String getNombreVisitante() {
+        return nombreVisitante;
+    }
+
+    public void setNombreVisitante(String n) {
+        this.nombreVisitante = n;
+    }
+
+    public String getEmailVisitante() {
+        return emailVisitante;
+    }
+
+    public void setEmailVisitante(String e) {
+        this.emailVisitante = e;
+    }
+
+    public int getCantidadPersonas() {
+        return cantidadPersonas;
+    }
+
+    public void setCantidadPersonas(int c) {
+        this.cantidadPersonas = c;
+    }
+
+    public String getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(String f) {
+        this.fechaRegistro = f;
+    }
+
+    public String getCodigoConfirmacion() {
+        return codigoConfirmacion;
+    }
+
+    public void setCodigoConfirmacion(String c) {
+        this.codigoConfirmacion = c;
+    }
+
+    public boolean isActiva()              { return activa; }
+    public void setActiva(boolean activa)  { this.activa = activa; }
 }

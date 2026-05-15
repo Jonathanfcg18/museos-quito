@@ -10,7 +10,8 @@ import java.util.List;
 
 /**
  * Repositorio para Reserva.
- * HU2: endpoint POST /reservas
+ * HU2: POST /reservas
+ * HU3: GET /reservas/usuario, DELETE /reservas/{id}, PUT /reservas/{id}
  */
 public class RepositorioReserva {
 
@@ -27,13 +28,45 @@ public class RepositorioReserva {
         }
     }
 
-    public List<Reserva> listarPorEmail(String email) {
+    public Reserva actualizar(Reserva r) {
         try (Session s = sf().openSession()) {
-            return s.createQuery(
+            s.beginTransaction();
+            Reserva merged = s.merge(r);
+            s.getTransaction().commit();
+            return merged;
+        }
+    }
+
+    public Reserva buscarPorId(int id) {
+        try (Session s = sf().openSession()) {
+            Reserva r = s.get(Reserva.class, id);
+            if (r != null) {
+                // Inicializar relaciones lazy
+                r.getFranja().getMuseo().getNombre();
+                r.getFranja().getFecha();
+            }
+            return r;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * GET /reservas/usuario — lista reservas activas por email.
+     */
+    public List<Reserva> listarActivasPorEmail(String email) {
+        try (Session s = sf().openSession()) {
+            List<Reserva> lista = s.createQuery(
                     "FROM Reserva r WHERE r.emailVisitante = :email " +
-                    "ORDER BY r.fechaRegistro DESC",
+                    "AND r.activa = true ORDER BY r.fechaRegistro DESC",
                     Reserva.class
             ).setParameter("email", email).list();
+            // Inicializar relaciones lazy para cada reserva
+            for (Reserva r : lista) {
+                r.getFranja().getMuseo().getNombre();
+                r.getFranja().getFecha();
+            }
+            return lista;
         } catch (Exception e) {
             return Collections.emptyList();
         }
@@ -41,13 +74,16 @@ public class RepositorioReserva {
 
     public Reserva buscarPorCodigo(String codigo) {
         try (Session s = sf().openSession()) {
-            return s.createQuery(
+            Reserva r = s.createQuery(
                     "FROM Reserva r WHERE r.codigoConfirmacion = :codigo",
                     Reserva.class
             ).setParameter("codigo", codigo).uniqueResult();
+            if (r != null) {
+                r.getFranja().getMuseo().getNombre();
+            }
+            return r;
         } catch (Exception e) {
             return null;
         }
     }
-    
 }

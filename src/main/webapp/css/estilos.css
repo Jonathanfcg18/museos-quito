@@ -589,3 +589,109 @@ img { max-width: 100%; display: block; }
     .form-reserva-panel { position: static; }
     .confirmacion-acciones { flex-direction: column; }
 }
+
+/* ── HU3: Panel de mis reservas ── */
+.reservas-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding-bottom: 3rem;
+}
+
+.reserva-card-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.reserva-panel-header {
+    background: #fdf6ee;
+    border-bottom: 1px solid var(--border);
+    padding: 0.9rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.reserva-codigo {
+    font-family: monospace;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--primary);
+    background: #f0e8dc;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    margin-right: 0.5rem;
+}
+
+.badge-active {
+    background: #E8F5E9;
+    color: var(--success);
+    border-color: var(--success);
+    font-size: 0.75rem;
+}
+
+.reserva-fecha-reg {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.reserva-panel-body {
+    padding: 1.25rem 1.5rem;
+}
+
+.reserva-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.info-label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+}
+
+.info-valor {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text);
+}
+
+.reserva-panel-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.btn-cancelar {
+    background: #FFEBEE;
+    color: var(--error-color);
+    border: 1px solid #FFCDD2;
+    padding: 0.6rem 1.4rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+}
+
+.btn-cancelar:hover {
+    background: #FFCDD2;
+}
+
+@media (max-width: 768px) {
+    .reserva-panel-footer { flex-direction: column; }
+    .reserva-panel-footer .btn,
+    .reserva-panel-footer form { width: 100%; }
+    .btn-cancelar { width: 100%; }
+}

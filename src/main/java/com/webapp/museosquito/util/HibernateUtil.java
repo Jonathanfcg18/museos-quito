@@ -9,23 +9,58 @@ import java.nio.file.Files;
 
 /**
  * Inicializa y provee la SessionFactory de Hibernate.
- * La BD SQLite se guarda en src/main/webapp/WEB-INF para persistir entre reinicios.
+ * La BD SQLite se guarda en src/main/webapp/WEB-INF para persistir entre
+ * reinicios.
  */
 public class HibernateUtil {
 
     private static SessionFactory sessionFactory;
 
     public static synchronized void init(String webAppRealPath) {
-        if (sessionFactory != null) return;
+        if (sessionFactory != null)
+            return;
 
-        File dbFile = resolverRutaBD(webAppRealPath);
-        String url = "jdbc:sqlite:" + dbFile.getAbsolutePath();
-        System.out.println("[HibernateUtil] BD en: " + url);
+        // Railway inyecta DATABASE_URL en formato postgresql://user:pass@host:port/db
+        String databaseUrl = System.getenv("DATABASE_URL");
 
-        sessionFactory = new Configuration()
-                .configure()
-                .setProperty(Environment.URL, url)
-                .buildSessionFactory();
+        String jdbcUrl, user, password;
+
+        if (databaseUrl != null && !databaseUrl.isBlank()) {
+            // Parsear URL de Railway: postgresql://user:pass@host:port/db
+            try {
+                java.net.URI uri = new java.net.URI(databaseUrl.replace("postgresql://", "http://"));
+                String userInfo = uri.getUserInfo();
+                user = userInfo.split(":")[0];
+                password = userInfo.split(":")[1];
+                jdbcUrl = "jdbc:postgresql://" + uri.getHost() + ":" + uri.getPort() + uri.getPath();
+                System.out.println("[HibernateUtil] Usando PostgreSQL de Railway.");
+            } catch (Exception e) {
+                throw new RuntimeException("No se pudo parsear DATABASE_URL: " + databaseUrl, e);
+            }
+        } else {
+            // Fallback local: SQLite para desarrollo en tu máquina
+            File dbFile = resolverRutaBD(webAppRealPath);
+            jdbcUrl = "jdbc:sqlite:" + dbFile.getAbsolutePath();
+            user = null;
+            password = null;
+            System.out.println("[HibernateUtil] Usando SQLite local: " + jdbcUrl);
+        }
+
+        Configuration cfg = new Configuration().configure();
+        cfg.setProperty(Environment.URL, jdbcUrl);
+        if (user != null)
+            cfg.setProperty(Environment.USER, user);
+        if (password != null)
+            cfg.setProperty(Environment.PASS, password);
+
+        // Ajustar dialecto según la base de datos
+        if (jdbcUrl.contains("postgresql")) {
+            cfg.setProperty(Environment.DIALECT, "org.hibernate.dialect.PostgreSQLDialect");
+        } else {
+            cfg.setProperty(Environment.DIALECT, "org.hibernate.community.dialect.SQLiteDialect");
+        }
+
+        sessionFactory = cfg.buildSessionFactory();
     }
 
     private static File resolverRutaBD(String webAppRealPath) {
@@ -38,7 +73,8 @@ public class HibernateUtil {
                 return new File(posibleWebInf, "museos.db");
             }
             candidato = candidato.getParentFile();
-            if (candidato == null) break;
+            if (candidato == null)
+                break;
         }
 
         // Estrategia 2: user.dir

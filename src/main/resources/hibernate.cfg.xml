@@ -4,28 +4,15 @@
         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-        <property name="hibernate.dialect">
-            org.hibernate.community.dialect.SQLiteDialect
-        </property>
-        <property name="hibernate.connection.driver_class">
-            org.sqlite.JDBC
-        </property>
-        <property name="hibernate.connection.url">
-            jdbc:sqlite:museos.db
-        </property>
         <property name="hibernate.hbm2ddl.auto">update</property>
-        <property name="hibernate.show_sql">true</property>
-        <property name="hibernate.format_sql">false</property>
+        <property name="hibernate.show_sql">false</property>
         <property name="hibernate.connection.pool_size">5</property>
 
-        <!-- Entidades del sistema -->
-        <mapping class="com.webapp.museosquito.model.AdminMuseo"/>
-        <mapping class="com.webapp.museosquito.model.FranjaReserva"/>
-        <mapping class="com.webapp.museosquito.model.Reserva"/>
         <mapping class="com.webapp.museosquito.model.Museo"/>
         <mapping class="com.webapp.museosquito.model.Exposicion"/>
         <mapping class="com.webapp.museosquito.model.HorarioMuseo"/>
-
-        
+        <mapping class="com.webapp.museosquito.model.FranjaReserva"/>
+        <mapping class="com.webapp.museosquito.model.Reserva"/>
+        <mapping class="com.webapp.museosquito.model.AdminMuseo"/>
     </session-factory>
 </hibernate-configuration>

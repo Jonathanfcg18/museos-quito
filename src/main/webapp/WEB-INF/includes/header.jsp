@@ -25,6 +25,8 @@
            class="${currentPage == 'museos' ? 'active' : ''}">Museos</a>
         <a href="${pageContext.request.contextPath}/reservas/mis-reservas"
            class="${currentPage == 'misreservas' ? 'active' : ''}">Mis Reservas</a>
+        <a href="${pageContext.request.contextPath}/admin/login"
+           class="${currentPage == 'admin' ? 'active' : ''}">Admin</a>
     </nav>
 </header>
 

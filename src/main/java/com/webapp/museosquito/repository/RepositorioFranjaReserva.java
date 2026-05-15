@@ -56,9 +56,8 @@ public class RepositorioFranjaReserva {
         try (Session s = sf().openSession()) {
             return s.createQuery(
                     "FROM FranjaReserva f WHERE f.museo.id = :mid " +
-                    "ORDER BY f.fecha, f.horaInicio",
-                    FranjaReserva.class
-            ).setParameter("mid", museoId).list();
+                            "ORDER BY f.fecha, f.horaInicio",
+                    FranjaReserva.class).setParameter("mid", museoId).list();
         } catch (Exception e) {
             return Collections.emptyList();
         }
@@ -68,11 +67,22 @@ public class RepositorioFranjaReserva {
         try (Session s = sf().openSession()) {
             Long count = s.createQuery(
                     "SELECT count(f) FROM FranjaReserva f WHERE f.museo.id = :mid",
-                    Long.class
-            ).setParameter("mid", museoId).uniqueResult();
+                    Long.class).setParameter("mid", museoId).uniqueResult();
             return count != null && count > 0;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    public void eliminar(int id) {
+        try (Session s = sf().openSession()) {
+            s.beginTransaction();
+            FranjaReserva f = s.get(FranjaReserva.class, id);
+            if (f != null)
+                s.remove(f);
+            s.getTransaction().commit();
+        } catch (Exception e) {
+            System.err.println("[RepositorioFranjaReserva] Error al eliminar: " + e.getMessage());
         }
     }
 }

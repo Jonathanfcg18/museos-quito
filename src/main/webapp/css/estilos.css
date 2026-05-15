@@ -695,3 +695,160 @@ img { max-width: 100%; display: block; }
     .reserva-panel-footer form { width: 100%; }
     .btn-cancelar { width: 100%; }
 }
+
+/* ── HU4: Panel de administrador ── */
+.admin-layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 2rem;
+    align-items: start;
+    padding-bottom: 3rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.campo-requerido {
+    font-size: 0.75rem;
+    color: var(--error-color);
+    font-weight: 600;
+    margin-left: 0.4rem;
+}
+
+.form-hint {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+/* Lista de franjas del admin */
+.franjas-admin-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.franja-admin-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    box-shadow: var(--shadow);
+}
+
+.franja-admin-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.franja-admin-fecha {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.aforo-disponible {
+    font-size: 0.85rem;
+    color: var(--success);
+    font-weight: 600;
+}
+
+.aforo-agotado {
+    font-size: 0.85rem;
+    color: var(--error-color);
+    font-weight: 700;
+}
+
+.franja-admin-acciones {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+/* Login admin */
+.login-box {
+    max-width: 420px;
+    margin: 3rem auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem 2rem;
+    box-shadow: var(--shadow);
+}
+
+.login-box h1 {
+    font-size: 1.6rem;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.login-box .text-muted {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.form-login {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.login-hint {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: #fdf6ee;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    font-size: 0.83rem;
+    color: var(--text-muted);
+}
+
+.login-hint code {
+    background: #f0e0c8;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: var(--primary);
+}
+
+/* Modal de edición */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-box {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 2rem;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+
+.modal-box h2 {
+    font-size: 1.2rem;
+    color: var(--primary);
+    margin-bottom: 1.25rem;
+}
+
+@media (max-width: 768px) {
+    .admin-layout { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .franja-admin-item { flex-direction: column; align-items: flex-start; }
+}

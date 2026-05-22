@@ -11,19 +11,14 @@ import java.io.IOException;
 
 /**
  * Verifica que el rol del usuario en sesión corresponda a la ruta solicitada.
- * Si no coincide, muestra la vista de acceso denegado.
+ * Solo aplica a las rutas nuevas del Sprint 2.
+ * Las rutas /admin/* del Sprint 1 tienen su propio control de acceso
+ * (ControladorLoginAdmin + obtenerAdmin()).
  *
- * Sprint 2 – HU-02 T-02.6: AutorizacionFilter.
- * Responsable Backend: Jhonny Moreira
- *
- * Reglas:
- *   /admin/*         → solo ADMIN_MUSEO (panel de horarios del Sprint 1)
- *   /admin-museo/*   → solo ADMIN_MUSEO
- *   /admin-sistema/* → solo ADMIN_SISTEMA
- *   /reservas/*      → VISITANTE (y también ADMIN_MUSEO puede ver)
+ * Sprint 2 – HU-06 T-02.6
+ * Responsable: Jhonny Moreira
  */
 @WebFilter(filterName = "AutorizacionFilter", urlPatterns = {
-        "/admin/*",
         "/admin-museo/*",
         "/admin-sistema/*"
 })
@@ -40,7 +35,7 @@ public class AutorizacionFilter implements Filter {
         Usuario usuario = (session != null)
                 ? (Usuario) session.getAttribute("usuarioSesion") : null;
 
-        // Si no hay sesión, el AutenticacionFilter ya habrá redirigido
+        // Sin sesión: el AutenticacionFilter ya habrá redirigido
         if (usuario == null) {
             chain.doFilter(request, response);
             return;
@@ -49,15 +44,13 @@ public class AutorizacionFilter implements Filter {
         String path = req.getServletPath();
         boolean autorizado = false;
 
-        if ((path.startsWith("/admin/") || path.startsWith("/admin-museo/"))
-                && usuario.isAdminMuseo()) {
+        if (path.startsWith("/admin-museo/") && usuario.isAdminMuseo()) {
             autorizado = true;
         } else if (path.startsWith("/admin-sistema/") && usuario.isAdminSistema()) {
             autorizado = true;
         }
 
         if (!autorizado) {
-            // Mostrar vista de acceso denegado sin revelar detalles de la ruta
             req.getRequestDispatcher("/WEB-INF/views/error-acceso.jsp")
                .forward(req, res);
             return;

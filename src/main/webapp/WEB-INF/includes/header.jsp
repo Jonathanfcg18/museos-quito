@@ -23,10 +23,49 @@
            class="${currentPage == 'inicio' ? 'active' : ''}">Inicio</a>
         <a href="${pageContext.request.contextPath}/museos"
            class="${currentPage == 'museos' ? 'active' : ''}">Museos</a>
-        <a href="${pageContext.request.contextPath}/reservas/mis-reservas"
-           class="${currentPage == 'misreservas' ? 'active' : ''}">Mis Reservas</a>
-        <a href="${pageContext.request.contextPath}/admin/login"
-           class="${currentPage == 'admin' ? 'active' : ''}">Admin</a>
+
+        <c:choose>
+            <c:when test="${not empty sessionScope.usuarioSesion}">
+                <%-- Usuario con sesión activa --%>
+                <c:set var="u" value="${sessionScope.usuarioSesion}"/>
+
+                <c:if test="${u.visitante}">
+                    <a href="${pageContext.request.contextPath}/reservas/mis-reservas"
+                       class="${currentPage == 'misreservas' ? 'active' : ''}">
+                        Mis Reservas
+                    </a>
+                </c:if>
+
+                <c:if test="${u.adminMuseo}">
+                    <a href="${pageContext.request.contextPath}/admin/horarios">
+                        Mi Museo
+                    </a>
+                </c:if>
+
+                <span style="color:#fff;opacity:.85;font-size:.85rem;">
+                    👤 ${u.nombre}
+                </span>
+                <a href="${pageContext.request.contextPath}/logout">
+                    Cerrar sesión
+                </a>
+            </c:when>
+            <c:otherwise>
+                <%-- Usuario sin sesión --%>
+                <a href="${pageContext.request.contextPath}/reservas/mis-reservas"
+                   class="${currentPage == 'misreservas' ? 'active' : ''}">
+                    Mis Reservas
+                </a>
+                <a href="${pageContext.request.contextPath}/login"
+                   class="${currentPage == 'login' ? 'active' : ''}">
+                    Iniciar sesión
+                </a>
+                <a href="${pageContext.request.contextPath}/registro"
+                   class="btn btn-primary"
+                   style="padding:.35rem .9rem;font-size:.85rem;">
+                    Registrarse
+                </a>
+            </c:otherwise>
+        </c:choose>
     </nav>
 </header>
 

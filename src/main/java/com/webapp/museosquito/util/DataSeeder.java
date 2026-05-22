@@ -4,16 +4,27 @@ import com.webapp.museosquito.model.Exposicion;
 import com.webapp.museosquito.model.FranjaReserva;
 import com.webapp.museosquito.model.HorarioMuseo;
 import com.webapp.museosquito.model.Museo;
+import com.webapp.museosquito.model.Usuario;
 import com.webapp.museosquito.repository.RepositorioFranjaReserva;
 import com.webapp.museosquito.repository.RepositorioMuseo;
+import com.webapp.museosquito.repository.RepositorioUsuario;
 import org.hibernate.Session;
 import com.webapp.museosquito.model.AdminMuseo;
 import com.webapp.museosquito.repository.RepositorioAdminMuseo;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Pobla la base de datos con museos reales de Quito, Ecuador.
  * Datos basados en información pública de la Fundación Museos de la Ciudad
  * y el Sistema de Museos y Espacios Culturales de Quito (SMQ).
+ *
+ * Sprint 2 – Se agregan usuarios del sistema para HU-01 y HU-02:
+ *   - Visitante de prueba (rol VISITANTE)
+ *   - Admin de museo en tabla usuarios (rol ADMIN_MUSEO, para login unificado)
+ *
+ * Responsable Sprint 2: Jonathan Cuasapaz
  */
 public class DataSeeder {
 
@@ -152,7 +163,7 @@ public class DataSeeder {
 
             System.out.println("[DataSeeder] Museos insertados. Sembrando franjas de reserva...");
 
-            // ── Franjas de reserva para HU2 ──────────────────────────────────
+            // ── Franjas de reserva para HU2 del Sprint 1 ─────────────────────────
             RepositorioFranjaReserva repoFranja = new RepositorioFranjaReserva();
             String[] fechas = {
                     "2026-06-02", "2026-06-03", "2026-06-04",
@@ -175,7 +186,9 @@ public class DataSeeder {
                 }
             }
 
-            // Administradores de museo para HU4
+            // ── Administradores de museo (entidad legacy Sprint 1 — HU4) ─────────
+            // Se mantiene para compatibilidad con ControladorLoginAdmin del Sprint 1.
+            // El Sprint 2 usa la tabla 'usuarios' con rol ADMIN_MUSEO.
             RepositorioAdminMuseo repoAdmin = new RepositorioAdminMuseo();
             if (!repoAdmin.hayDatos()) {
                 repoAdmin.guardar(new AdminMuseo(
@@ -194,10 +207,83 @@ public class DataSeeder {
                         "Admin Intiñán", "admin.intinan@museos.gob.ec", "admin123", intinan));
                 repoAdmin.guardar(new AdminMuseo(
                         "Admin Ciudad", "admin.ciudad@museos.gob.ec", "admin123", museoCiudad));
-                System.out.println("[DataSeeder] Administradores de museo creados.");
+                System.out.println("[DataSeeder] Administradores de museo (legacy) creados.");
             }
 
-            System.out.println("[DataSeeder] ¡Semilla completada! 8 museos y franjas de reserva insertados.");
+            // ─────────────────────────────────────────────────────────────────────
+            // SPRINT 2 – HU-01 y HU-02
+            // Siembra usuarios en la tabla 'usuarios' para el nuevo sistema
+            // de autenticación unificado por rol.
+            //
+            // Responsable: Jonathan Cuasapaz
+            // ─────────────────────────────────────────────────────────────────────
+            RepositorioUsuario repoUsuario = new RepositorioUsuario();
+
+            if (!repoUsuario.hayAdminSistema()) {
+
+                String ahora = LocalDateTime.now()
+                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+                // ── Visitante de prueba ───────────────────────────────────────────
+                // HU-01 Escenario 1: puede registrarse y también sirve para
+                // verificar el login (HU-02 Escenario 1 — rol VISITANTE).
+                Usuario visitante = new Usuario();
+                visitante.setNombre("Visitante de Prueba");
+                visitante.setEmail("visitante@prueba.ec");
+                visitante.setPasswordHash(PasswordUtil.hashear("Visita2026!"));
+                visitante.setRol(Usuario.Rol.VISITANTE);
+                visitante.setEstado(Usuario.Estado.ACTIVO);
+                visitante.setCreadoEn(ahora);
+                repoUsuario.guardar(visitante);
+
+                // ── Admin de museo en tabla usuarios ─────────────────────────────
+                // HU-02 Escenario 1: login con rol ADMIN_MUSEO redirige a
+                // /admin/horarios (panel de gestión del Sprint 1).
+                // Se usa el mismo correo que el AdminMuseo legacy para consistencia.
+                Usuario adminMuseoUsuario = new Usuario();
+                adminMuseoUsuario.setNombre("Admin Nacional");
+                adminMuseoUsuario.setEmail("admin.nacional@museos.gob.ec");
+                adminMuseoUsuario.setPasswordHash(PasswordUtil.hashear("Admin2026!"));
+                adminMuseoUsuario.setRol(Usuario.Rol.ADMIN_MUSEO);
+                adminMuseoUsuario.setEstado(Usuario.Estado.ACTIVO);
+                adminMuseoUsuario.setCreadoEn(ahora);
+                repoUsuario.guardar(adminMuseoUsuario);
+
+                // ── Admin del sistema ─────────────────────────────────────────────
+                // HU-02 Escenario 1: login con rol ADMIN_SISTEMA.
+                // Se crea para verificar la redirección por rol en los tests.
+                Usuario adminSistema = new Usuario();
+                adminSistema.setNombre("Administrador del Sistema");
+                adminSistema.setEmail("admin.sistema@portalcultura.ec");
+                adminSistema.setPasswordHash(PasswordUtil.hashear("Sistema2026!"));
+                adminSistema.setRol(Usuario.Rol.ADMIN_SISTEMA);
+                adminSistema.setEstado(Usuario.Estado.ACTIVO);
+                adminSistema.setCreadoEn(ahora);
+                repoUsuario.guardar(adminSistema);
+
+                // ── Visitante suspendido ──────────────────────────────────────────
+                // HU-02 Escenario 3: cuenta suspendida con credenciales correctas.
+                // Permite verificar el mensaje de suspensión en el login.
+                Usuario visitanteSuspendido = new Usuario();
+                visitanteSuspendido.setNombre("Usuario Suspendido");
+                visitanteSuspendido.setEmail("suspendido@prueba.ec");
+                visitanteSuspendido.setPasswordHash(PasswordUtil.hashear("Suspendido2026!"));
+                visitanteSuspendido.setRol(Usuario.Rol.VISITANTE);
+                visitanteSuspendido.setEstado(Usuario.Estado.SUSPENDIDO);
+                visitanteSuspendido.setCreadoEn(ahora);
+                repoUsuario.guardar(visitanteSuspendido);
+
+                System.out.println("[DataSeeder] Usuarios Sprint 2 creados:");
+                System.out.println("  → visitante@prueba.ec       / Visita2026!     (VISITANTE - ACTIVO)");
+                System.out.println("  → admin.nacional@museos.gob.ec / Admin2026!  (ADMIN_MUSEO - ACTIVO)");
+                System.out.println("  → admin.sistema@portalcultura.ec / Sistema2026! (ADMIN_SISTEMA - ACTIVO)");
+                System.out.println("  → suspendido@prueba.ec      / Suspendido2026! (VISITANTE - SUSPENDIDO)");
+            } else {
+                System.out.println("[DataSeeder] Usuarios Sprint 2 ya existen. Omitido.");
+            }
+            // ─────────────────────────────────────────────────────────────────────
+
+            System.out.println("[DataSeeder] ¡Semilla completada! 8 museos, franjas de reserva y usuarios insertados.");
 
         } catch (Exception e) {
             System.err.println("[DataSeeder] Error: " + e.getMessage());
@@ -234,5 +320,4 @@ public class DataSeeder {
             s.close();
         }
     }
-
 }

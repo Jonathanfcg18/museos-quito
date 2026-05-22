@@ -17,13 +17,14 @@ import java.io.IOException;
  * Sprint 2 – HU-02: Iniciar y cerrar sesión.
  * Responsable Backend: Jhonny Moreira
  *
- * GET  /login → muestra el formulario (T-02.1).
- * POST /login → valida credenciales y redirige por rol (T-02.2 / T-02.3 / T-02.4).
+ * GET /login → muestra el formulario (T-02.1).
+ * POST /login → valida credenciales y redirige por rol (T-02.2 / T-02.3 /
+ * T-02.4).
  *
  * Redirección por rol — Escenario 1:
- *   VISITANTE      → /museos
- *   ADMIN_MUSEO    → /admin/horarios   (panel existente del Sprint 1)
- *   ADMIN_SISTEMA  → /museos           (panel futuro, por ahora al catálogo)
+ * VISITANTE → /museos
+ * ADMIN_MUSEO → /admin/horarios (panel existente del Sprint 1)
+ * ADMIN_SISTEMA → /museos (panel futuro, por ahora al catálogo)
  */
 @WebServlet(name = "ControladorLogin", urlPatterns = "/login")
 public class ControladorLogin extends ControladorBase {
@@ -44,7 +45,8 @@ public class ControladorLogin extends ControladorBase {
         // Si ya tiene sesión activa, redirigir según su rol
         HttpSession session = req.getSession(false);
         Usuario usuario = (session != null)
-                ? (Usuario) session.getAttribute("usuarioSesion") : null;
+                ? (Usuario) session.getAttribute("usuarioSesion")
+                : null;
 
         if (usuario != null) {
             redirigirPorRol(usuario, req, res);
@@ -66,19 +68,18 @@ public class ControladorLogin extends ControladorBase {
             throws ServletException, IOException {
         setEncoding(req, res);
 
-        String email    = req.getParameter("email");
+        String email = req.getParameter("email");
         String password = req.getParameter("password");
 
         // Validación básica de campos
         if (email == null || email.isBlank() ||
-            password == null || password.isBlank()) {
+                password == null || password.isBlank()) {
             req.setAttribute("error", "El correo y la contraseña son obligatorios.");
             irAVista("auth/login.jsp", req, res);
             return;
         }
 
-        ServicioAutenticacion.ResultadoLogin resultado =
-                servicioAuth.autenticar(email, password);
+        ServicioAutenticacion.ResultadoLogin resultado = servicioAuth.autenticar(email, password);
 
         switch (resultado) {
 
@@ -115,11 +116,11 @@ public class ControladorLogin extends ControladorBase {
      * T-02.4: Redirige al usuario a la sección correspondiente según su rol.
      */
     private void redirigirPorRol(Usuario u, HttpServletRequest req,
-                                  HttpServletResponse res) throws IOException {
+            HttpServletResponse res) throws IOException {
         String destino = switch (u.getRol()) {
-            case VISITANTE     -> "/museos";
-            case ADMIN_MUSEO   -> "/admin/horarios";
-            case ADMIN_SISTEMA -> "/museos";
+            case VISITANTE -> "/museos";
+            case ADMIN_MUSEO -> "/admin-museo/dashboard";
+            case ADMIN_SISTEMA -> "/admin-sistema/dashboard";
         };
         redirigir(destino, req, res);
     }

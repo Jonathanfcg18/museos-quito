@@ -96,6 +96,12 @@
             <version>5.14.2</version>
             <scope>test</scope>
         </dependency>
+        <!-- BCrypt para hashing de contraseñas — T-01.4 / T-02.2 -->
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
     </dependencies>
 
     <build>

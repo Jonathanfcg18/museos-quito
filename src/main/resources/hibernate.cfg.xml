@@ -14,5 +14,6 @@
         <mapping class="com.webapp.museosquito.model.FranjaReserva"/>
         <mapping class="com.webapp.museosquito.model.Reserva"/>
         <mapping class="com.webapp.museosquito.model.AdminMuseo"/>
+        <mapping class="com.webapp.museosquito.model.Usuario"/>
     </session-factory>
 </hibernate-configuration>

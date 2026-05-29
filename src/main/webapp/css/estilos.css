@@ -277,9 +277,9 @@ body.dark-mode .navbar {
 .hero-carousel {
     position: absolute;
     inset: 0;
-    display: flex;
 }
 
+/* Carrusel controlado por JS - el JS añade/quita .carousel-active */
 .hero-slide {
     position: absolute;
     inset: 0;
@@ -287,25 +287,9 @@ body.dark-mode .navbar {
     background-position: center;
     opacity: 0;
     transition: opacity 1.2s ease-in-out;
-    animation: carouselFade 40s infinite;
 }
-
-/* 8 museos, cada uno ocupa 12.5% del ciclo de 40s */
-.hero-slide:nth-child(1)  { animation-delay: 0s; }
-.hero-slide:nth-child(2)  { animation-delay: 5s; }
-.hero-slide:nth-child(3)  { animation-delay: 10s; }
-.hero-slide:nth-child(4)  { animation-delay: 15s; }
-.hero-slide:nth-child(5)  { animation-delay: 20s; }
-.hero-slide:nth-child(6)  { animation-delay: 25s; }
-.hero-slide:nth-child(7)  { animation-delay: 30s; }
-.hero-slide:nth-child(8)  { animation-delay: 35s; }
-
-@keyframes carouselFade {
-    0%    { opacity: 0; }
-    3%    { opacity: 1; }
-    22%   { opacity: 1; }
-    25%   { opacity: 0; }
-    100%  { opacity: 0; }
+.hero-slide.carousel-active {
+    opacity: 1;
 }
 
 .hero-overlay {
@@ -389,7 +373,24 @@ body.dark-mode .navbar {
 /* ============================================================
    FEATURES
    ============================================================ */
-.features { padding: 4.5rem 2rem; }
+.features {
+    padding: 5rem 0;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #2C1810 0%, #3d1c06 100%);
+}
+.features .container { position: relative; z-index: 1; }
+
+/* Canvas WebGL partículas */
+#featuresGl {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: 0;
+    pointer-events: none;
+}
 .section-title {
     text-align: center;
     font-family: var(--font-display);

@@ -10,13 +10,8 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * Verifica que el rol del usuario en sesión corresponda a la ruta solicitada.
- * Solo aplica a las rutas nuevas del Sprint 2.
- * Las rutas /admin/* del Sprint 1 tienen su propio control de acceso
- * (ControladorLoginAdmin + obtenerAdmin()).
- *
- * Sprint 2 – HU-06 T-02.6
- * Responsable: Jhonny Moreira
+ * Verifica que el rol del usuario corresponda a la ruta solicitada.
+ * Solo aplica a rutas de admin del Sprint 2.
  */
 @WebFilter(filterName = "AutorizacionFilter", urlPatterns = {
         "/admin-museo/*",
@@ -35,7 +30,6 @@ public class AutorizacionFilter implements Filter {
         Usuario usuario = (session != null)
                 ? (Usuario) session.getAttribute("usuarioSesion") : null;
 
-        // Sin sesión: el AutenticacionFilter ya habrá redirigido
         if (usuario == null) {
             chain.doFilter(request, response);
             return;

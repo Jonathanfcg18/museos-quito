@@ -18,10 +18,10 @@ import java.io.IOException;
  * Responsable Backend: Jhonny Moreira
  *
  * CAMBIOS v2.0 (auth unificado):
- *   - GET /login  → muestra auth.jsp (login + registro en tabs)
- *   - POST /login → en error usa atributo "errorLogin" (no "error")
- *                   y también pasa "emailLogin" para repoblar el campo
- *   - La vista destino cambió de "auth/login.jsp" a "auth/auth.jsp"
+ * - GET /login → muestra auth.jsp (login + registro en tabs)
+ * - POST /login → en error usa atributo "errorLogin" (no "error")
+ * y también pasa "emailLogin" para repoblar el campo
+ * - La vista destino cambió de "auth/login.jsp" a "auth/auth.jsp"
  */
 @WebServlet(name = "ControladorLogin", urlPatterns = "/login")
 public class ControladorLogin extends ControladorBase {
@@ -42,7 +42,6 @@ public class ControladorLogin extends ControladorBase {
             throws ServletException, IOException {
         setEncoding(req, res);
 
-        // Si ya tiene sesión activa, redirigir según su rol
         HttpSession session = req.getSession(false);
         Usuario usuario = (session != null)
                 ? (Usuario) session.getAttribute("usuarioSesion")
@@ -53,7 +52,6 @@ public class ControladorLogin extends ControladorBase {
             return;
         }
 
-        // ── CAMBIO: vista unificada en lugar de auth/login.jsp ──
         irAVista("auth/auth.jsp", req, res);
     }
 
@@ -65,7 +63,7 @@ public class ControladorLogin extends ControladorBase {
             throws ServletException, IOException {
         setEncoding(req, res);
 
-        String email    = req.getParameter("email");
+        String email = req.getParameter("email");
         String password = req.getParameter("password");
 
         // Validación básica de campos vacíos
@@ -79,8 +77,7 @@ public class ControladorLogin extends ControladorBase {
             return;
         }
 
-        ServicioAutenticacion.ResultadoLogin resultado =
-                servicioAuth.autenticar(email, password);
+        ServicioAutenticacion.ResultadoLogin resultado = servicioAuth.autenticar(email, password);
 
         switch (resultado) {
 
@@ -88,8 +85,19 @@ public class ControladorLogin extends ControladorBase {
                 Usuario usuario = servicioAuth.getUsuarioAutenticado();
                 HttpSession session = req.getSession(true);
                 session.setAttribute("usuarioSesion", usuario);
-                session.setMaxInactiveInterval(60 * 30); // 30 minutos
-                redirigirPorRol(usuario, req, res);
+                session.setMaxInactiveInterval(60 * 30);
+
+                // Redirigir a la URL original si venía de una página protegida
+                String urlAnterior = (String) session.getAttribute("urlAnteriorLogin");
+                session.removeAttribute("urlAnteriorLogin");
+
+                if (urlAnterior != null && !urlAnterior.isBlank()
+                        && !urlAnterior.contains("/login")
+                        && !urlAnterior.contains("/registro")) {
+                    res.sendRedirect(urlAnterior);
+                } else {
+                    redirigirPorRol(usuario, req, res);
+                }
             }
 
             case CUENTA_SUSPENDIDA -> {
@@ -118,8 +126,8 @@ public class ControladorLogin extends ControladorBase {
     private void redirigirPorRol(Usuario u, HttpServletRequest req,
             HttpServletResponse res) throws IOException {
         String destino = switch (u.getRol()) {
-            case VISITANTE     -> "/museos";
-            case ADMIN_MUSEO   -> "/admin-museo/dashboard";
+            case VISITANTE -> "/museos";
+            case ADMIN_MUSEO -> "/admin-museo/dashboard";
             case ADMIN_SISTEMA -> "/admin-sistema/dashboard";
         };
         redirigir(destino, req, res);

@@ -10,18 +10,13 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * Intercepta las rutas protegidas del Sprint 2 y redirige al login
- * si no hay sesión activa (usuarioSesion).
- *
- * IMPORTANTE: Solo protege /admin-museo/* y /admin-sistema/*.
- * Las rutas /admin/* del Sprint 1 mantienen su propio sistema de sesión
- * (adminMuseo) y no deben ser interceptadas por este filtro.
- * Las rutas /reservas/* siguen siendo públicas (como en el Sprint 1).
- *
- * Sprint 2 – HU-06 T-02.5
- * Responsable: Jhonny Moreira
+ * Protege rutas que requieren sesión activa.
+ * Sin sesión → redirige al login.
  */
 @WebFilter(filterName = "AutenticacionFilter", urlPatterns = {
+        "/museos",
+        "/museos/*",
+        "/reservas/*",
         "/admin-museo/*",
         "/admin-sistema/*"
 })
@@ -34,12 +29,25 @@ public class AutenticacionFilter implements Filter {
         HttpServletRequest  req = (HttpServletRequest)  request;
         HttpServletResponse res = (HttpServletResponse) response;
 
+        String path = req.getServletPath();
+
+        // Rutas del sistema nuevo (Sprint 2): requieren usuarioSesion
         HttpSession session = req.getSession(false);
         Usuario usuario = (session != null)
                 ? (Usuario) session.getAttribute("usuarioSesion") : null;
 
+        // Admin legacy Sprint 1 (/admin/*) tiene su propio sistema de sesión
+        if (path.startsWith("/admin/") || path.equals("/admin")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         if (usuario == null) {
-            // Sin sesión Sprint 2: redirigir al login unificado
+            // Guardar la URL a la que intentaba acceder para redirigir después del login
+            String queryString = req.getQueryString();
+            String urlOriginal = req.getContextPath() + path +
+                    (queryString != null ? "?" + queryString : "");
+            req.getSession(true).setAttribute("urlAnteriorLogin", urlOriginal);
             res.sendRedirect(req.getContextPath() + "/login");
             return;
         }

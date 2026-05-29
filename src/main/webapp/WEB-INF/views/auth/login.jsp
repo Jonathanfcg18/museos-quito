@@ -1,282 +1,117 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Gestión de Horarios – ${admin.museo.nombre}</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css"/>
-  <script src="${pageContext.request.contextPath}/js/settings.js" defer></script>
-</head>
-<body>
+<c:set var="pageTitle" value="Iniciar sesión – Portal de Cultura Quito"/>
+<%@ include file="/WEB-INF/includes/header.jsp" %>
 
-<header class="navbar" role="banner">
-  <div class="navbar-brand">
-    <span class="logo-icon" aria-hidden="true">🏛️</span>
-    <div>
-      <span class="brand-title">Panel Administrador</span>
-      <span class="brand-sub">${admin.museo.nombre}</span>
-    </div>
-  </div>
-  <nav class="navbar-links" aria-label="Navegación del panel">
-    <span style="color:#fff;opacity:0.85;font-size:.85rem;">👤 ${admin.nombre}</span>
-    <a href="${pageContext.request.contextPath}/admin/logout">Cerrar sesión</a>
-    <button class="settings-btn" onclick="openSettings()" aria-label="Configuración">⚙️</button>
-  </nav>
-</header>
-
-<main id="contenido-principal" class="main-content">
 <div class="container">
+    <div class="login-box">
 
-  <div class="page-header">
-    <h1>📅 Gestión de Horarios y Aforo</h1>
-    <p>Crea, modifica y controla las franjas horarias de
-       <strong>${admin.museo.nombre}</strong>.</p>
-  </div>
+        <h1>🔐 Iniciar sesión</h1>
+        <p class="text-muted">Accede con tu correo electrónico y contraseña.</p>
 
-  <c:if test="${not empty mensaje}">
-    <div class="alert alert-success">${mensaje}</div>
-  </c:if>
-  <c:if test="${not empty error}">
-    <div class="alert alert-error">${error}</div>
-  </c:if>
+        <%--
+            Mensajes de error del servidor:
+            Escenario 2 → "Correo o contraseña incorrectos."
+            Escenario 3 → "Tu cuenta ha sido suspendida. Contacta al administrador."
+        --%>
+        <c:if test="${not empty error}">
+            <div class="alert alert-error">${error}</div>
+        </c:if>
 
-  <div class="admin-layout">
+        <%-- T-02.1: Formulario de login con correo y contraseña. --%>
+        <form method="post"
+              action="${pageContext.request.contextPath}/login"
+              id="formLogin"
+              novalidate>
 
-    <%-- Formulario de creación --%>
-    <div class="detalle-card">
-      <h2>➕ Nueva franja horaria</h2>
-      <p class="text-muted" style="font-size:.85rem;margin-bottom:1rem;">
-        Todos los campos son obligatorios. El aforo máximo es requerido.
-      </p>
+            <%-- Campo: correo electrónico --%>
+            <div class="form-group">
+                <label for="email">Correo electrónico</label>
+                <input type="email"
+                       id="email"
+                       name="email"
+                       class="form-control"
+                       value="${not empty email ? email : ''}"
+                       placeholder="correo@ejemplo.com"
+                       required
+                       autofocus/>
+                <span class="campo-error" id="errEmail" style="display:none;
+                      color:var(--error-color);font-size:.82rem;">
+                    El correo electrónico es obligatorio.
+                </span>
+            </div>
 
-      <form method="post"
-            action="${pageContext.request.contextPath}/admin/horarios"
-            id="formCrear">
-        <input type="hidden" name="accion" value="crear"/>
+            <%-- Campo: contraseña --%>
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password"
+                       id="password"
+                       name="password"
+                       class="form-control"
+                       placeholder="••••••••"
+                       required/>
+                <span class="campo-error" id="errPassword" style="display:none;
+                      color:var(--error-color);font-size:.82rem;">
+                    La contraseña es obligatoria.
+                </span>
+            </div>
 
-        <div class="form-group">
-          <label for="fecha">Fecha</label>
-          <input type="date" id="fecha" name="fecha" class="form-control" required/>
+            <button type="submit" class="btn btn-primary btn-full"
+                    style="margin-top:.75rem;">
+                Ingresar →
+            </button>
+        </form>
+
+        <p style="text-align:center;margin-top:1.25rem;font-size:.9rem;
+                  color:var(--text-muted);">
+            ¿No tienes cuenta?
+            <a href="${pageContext.request.contextPath}/registro">Regístrate aquí</a>
+        </p>
+
+        <div class="login-hint" style="margin-top:1.25rem;">
+            <p><strong>Credenciales de prueba:</strong></p>
+            <p>👤 Visitante: <code>visitante@prueba.ec</code> /
+               <code>Visita2026!</code></p>
+            <p>🏛️ Admin museo: <code>admin.nacional@museos.gob.ec</code> /
+               <code>Admin2026!</code></p>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="horaInicio">Hora inicio</label>
-            <input type="time" id="horaInicio" name="horaInicio"
-                   class="form-control" required/>
-          </div>
-          <div class="form-group">
-            <label for="horaFin">Hora fin</label>
-            <input type="time" id="horaFin" name="horaFin"
-                   class="form-control" required/>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="aforoMaximo">
-            Aforo máximo de visitantes
-            <span class="campo-requerido">* obligatorio</span>
-          </label>
-          <input type="number" id="aforoMaximo" name="aforoMaximo"
-                 class="form-control" min="1" required placeholder="Ej: 20"/>
-          <small class="form-hint">
-            Número máximo de personas permitidas en esta franja.
-          </small>
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-full">
-          Guardar franja horaria
-        </button>
-      </form>
+        <a href="${pageContext.request.contextPath}/"
+           class="btn btn-secondary btn-full" style="margin-top:.75rem;">
+            ← Volver al inicio
+        </a>
     </div>
-
-    <%-- Lista de franjas --%>
-    <div>
-      <div style="display:flex;align-items:center;justify-content:space-between;
-                  margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
-        <h2 style="color:var(--primary);margin:0;font-family:var(--font-display);">
-          📋 Franjas registradas
-          <span class="text-muted" style="font-size:.85rem;font-weight:400;">
-            (${franjas.size()} total)
-          </span>
-        </h2>
-        <div class="admin-filtro-fecha">
-          <label style="font-size:.85rem;color:var(--text-muted);">Filtrar:</label>
-          <input type="date" id="filtroFecha" class="form-control"
-                 style="width:auto;padding:.4rem .7rem;font-size:.85rem;"
-                 onchange="filtrarFranjas()"/>
-          <button class="btn btn-secondary"
-                  style="padding:.4rem .8rem;font-size:.82rem;"
-                  onclick="limpiarFiltro()">✕</button>
-        </div>
-      </div>
-
-      <c:choose>
-        <c:when test="${empty franjas}">
-          <div class="empty-state">
-            <span class="empty-icon">📅</span>
-            <h3>No hay franjas registradas</h3>
-            <p>Crea la primera franja horaria con el formulario.</p>
-          </div>
-        </c:when>
-        <c:otherwise>
-          <div class="franjas-admin-lista" id="franjasList">
-            <c:forEach var="franja" items="${franjas}">
-              <div class="franja-admin-item"
-                   data-fecha="${franja.fecha}"
-                   data-id="${franja.id}">
-                <div class="franja-admin-info">
-                  <div class="franja-admin-fecha">
-                    📅 ${franja.fecha} &nbsp;🕐 ${franja.horaInicio} – ${franja.horaFin}
-                  </div>
-                  <div>
-                    <c:choose>
-                      <c:when test="${franja.hayCupos()}">
-                        <span class="aforo-disponible">
-                          ✅ ${franja.aforoOcupado}/${franja.aforoMaximo} reservas
-                          — ${franja.cuposDisponibles} cupo(s) libre(s)
-                        </span>
-                      </c:when>
-                      <c:otherwise>
-                        <span class="aforo-agotado">
-                          🚫 AGOTADO — ${franja.aforoOcupado}/${franja.aforoMaximo} reservas
-                        </span>
-                      </c:otherwise>
-                    </c:choose>
-                  </div>
-                </div>
-
-                <div class="franja-admin-acciones">
-                  <button class="btn btn-secondary"
-                          onclick="abrirEdicion(
-                            '${franja.id}',
-                            '${franja.fecha}',
-                            '${franja.horaInicio}',
-                            '${franja.horaFin}',
-                            '${franja.aforoMaximo}')">
-                    ✏️ Editar
-                  </button>
-
-                  <c:if test="${franja.aforoOcupado == 0}">
-                    <form method="post"
-                          action="${pageContext.request.contextPath}/admin/horarios"
-                          onsubmit="return confirm('¿Eliminar esta franja?')">
-                      <input type="hidden" name="accion"   value="eliminar"/>
-                      <input type="hidden" name="franjaId" value="${franja.id}"/>
-                      <button type="submit" class="btn btn-cancelar">
-                        🗑️ Eliminar
-                      </button>
-                    </form>
-                  </c:if>
-                </div>
-              </div>
-            </c:forEach>
-          </div>
-        </c:otherwise>
-      </c:choose>
-    </div>
-  </div>
-
-  <%-- Modal de edición --%>
-  <div id="modalEdicion" class="modal-overlay" style="display:none;"
-       role="dialog" aria-modal="true" aria-labelledby="tituloModalEdicion">
-    <div class="modal-box">
-      <h2 id="tituloModalEdicion">✏️ Modificar franja horaria</h2>
-
-      <form method="post"
-            action="${pageContext.request.contextPath}/admin/horarios"
-            id="formModificar">
-        <input type="hidden" name="accion"   value="modificar"/>
-        <input type="hidden" name="franjaId" id="editFranjaId"/>
-
-        <div class="form-group">
-          <label for="editFecha">Fecha</label>
-          <input type="date" id="editFecha" name="fecha"
-                 class="form-control" required/>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="editHoraInicio">Hora inicio</label>
-            <input type="time" id="editHoraInicio" name="horaInicio"
-                   class="form-control" required/>
-          </div>
-          <div class="form-group">
-            <label for="editHoraFin">Hora fin</label>
-            <input type="time" id="editHoraFin" name="horaFin"
-                   class="form-control" required/>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="editAforo">
-            Aforo máximo
-            <span class="campo-requerido">* obligatorio</span>
-          </label>
-          <input type="number" id="editAforo" name="aforoMaximo"
-                 class="form-control" min="1" required/>
-          <small class="form-hint">
-            No puede ser menor al número de reservas actuales.
-          </small>
-        </div>
-
-        <div style="display:flex;gap:.75rem;margin-top:1.25rem;">
-          <button type="submit" class="btn btn-primary" style="flex:1;">
-            Guardar cambios
-          </button>
-          <button type="button" class="btn btn-secondary"
-                  onclick="cerrarEdicion()" style="flex:1;">
-            Cancelar
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
 </div>
-</main>
 
-<footer class="footer" role="contentinfo">
-  <div class="footer-content">
-    <p>Portal de Cultura Quito – Panel de Administración</p>
-  </div>
-</footer>
-
-<%@ include file="/WEB-INF/includes/settings-modal.jsp" %>
-
+<%-- Validación del lado del cliente: campos obligatorios --%>
 <script>
-  function abrirEdicion(id, fecha, inicio, fin, aforo) {
-    document.getElementById('editFranjaId').value    = id;
-    document.getElementById('editFecha').value       = fecha;
-    document.getElementById('editHoraInicio').value  = inicio;
-    document.getElementById('editHoraFin').value     = fin;
-    document.getElementById('editAforo').value       = aforo;
-    document.getElementById('modalEdicion').style.display = 'flex';
-  }
-  function cerrarEdicion() {
-    document.getElementById('modalEdicion').style.display = 'none';
-  }
-  document.getElementById('modalEdicion').addEventListener('click', function(e) {
-    if (e.target === this) cerrarEdicion();
-  });
+    document.getElementById("formLogin").addEventListener("submit", function(e) {
+        let valido = true;
 
-  function filtrarFranjas() {
-    var fecha = document.getElementById('filtroFecha').value;
-    document.querySelectorAll('.franja-admin-item').forEach(function(item) {
-      item.style.display =
-        (!fecha || item.dataset.fecha === fecha) ? '' : 'none';
+        document.querySelectorAll(".campo-error").forEach(function(el) {
+            el.style.display = "none";
+        });
+        document.querySelectorAll(".form-control").forEach(function(el) {
+            el.style.borderColor = "";
+        });
+
+        const email    = document.getElementById("email");
+        const password = document.getElementById("password");
+
+        if (email.value.trim() === "") {
+            document.getElementById("errEmail").style.display = "block";
+            email.style.borderColor = "var(--error-color)";
+            valido = false;
+        }
+
+        if (password.value === "") {
+            document.getElementById("errPassword").style.display = "block";
+            password.style.borderColor = "var(--error-color)";
+            valido = false;
+        }
+
+        if (!valido) e.preventDefault();
     });
-  }
-  function limpiarFiltro() {
-    document.getElementById('filtroFecha').value = '';
-    document.querySelectorAll('.franja-admin-item').forEach(function(item) {
-      item.style.display = '';
-    });
-  }
 </script>
-</body>
-</html>
+
+<%@ include file="/WEB-INF/includes/footer.jsp" %>

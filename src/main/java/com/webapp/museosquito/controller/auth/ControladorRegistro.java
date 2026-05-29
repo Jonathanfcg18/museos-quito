@@ -10,19 +10,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 
 /**
  * Controlador de registro de nuevos visitantes.
  *
  * Sprint 2 – HU-01: Registrarse en el portal.
+ * Responsable Backend: Jonathan Cuasapaz
  *
- * GET  /registro → redirige a /login?tab=registro (pantalla unificada).
+ * GET  /registro → muestra el formulario (T-01.1).
  * POST /registro → procesa el registro, crea sesión y redirige (T-01.3/T-01.5/T-01.6).
- *
- * CAMBIO FRONTEND: el formulario de registro ya no tiene su propia vista JSP;
- * ahora vive dentro de login.jsp como segundo tab. Los errores se pasan por
- * query params para que el tab de registro quede activo.
  */
 @WebServlet(name = "ControladorRegistro", urlPatterns = "/registro")
 public class ControladorRegistro extends ControladorBase {
@@ -34,26 +30,28 @@ public class ControladorRegistro extends ControladorBase {
         servicioAuth = new ServicioAutenticacion();
     }
 
-    /**
-     * GET /registro → redirige a la pantalla de autenticación con tab=registro.
-     */
+    /** GET /registro → muestra el formulario de registro. */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
         setEncoding(req, res);
 
-        // Si ya tiene sesión activa, redirigir al catálogo
+        // Si ya tiene sesión activa, redirigir al catálogo (evitar doble registro)
         HttpSession session = req.getSession(false);
         if (session != null && session.getAttribute("usuarioSesion") != null) {
             redirigir("/museos", req, res);
             return;
         }
 
-        redirigir("/login?tab=registro", req, res);
+        irAVista("auth/registro.jsp", req, res);
     }
 
     /**
      * POST /registro → valida, crea la cuenta y genera sesión automática.
+     *
+     * T-01.3: valida unicidad del correo (delegado al servicio).
+     * T-01.5: crea registro con rol='visitante', estado='activo'.
+     * T-01.6: inicia sesión automáticamente y redirige al catálogo.
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res)
@@ -65,41 +63,43 @@ public class ControladorRegistro extends ControladorBase {
         String password  = req.getParameter("password");
         String confirmar = req.getParameter("confirmar");
 
-        // Campos vacíos detectados antes de llamar al servicio
+        // Escenario 4: campos vacíos detectados antes de llamar al servicio
         if (estaVacio(nombre) || estaVacio(email) ||
             estaVacio(password) || estaVacio(confirmar)) {
-            redirigirConError("Todos los campos son obligatorios.", nombre, email, res, req);
+            req.setAttribute("error", "Todos los campos son obligatorios.");
+            req.setAttribute("nombre", nombre);
+            req.setAttribute("email", email);
+            irAVista("auth/registro.jsp", req, res);
             return;
         }
 
         try {
+            // Delegar toda la lógica de negocio al servicio
             Usuario nuevo = servicioAuth.registrarVisitante(
                     nombre, email, password, confirmar);
 
-            // Inicio de sesión automático tras registro exitoso
+            // T-01.6: inicio de sesión automático tras registro exitoso
             HttpSession session = req.getSession(true);
             session.setAttribute("usuarioSesion", nuevo);
-            session.setMaxInactiveInterval(60 * 30);
+            session.setMaxInactiveInterval(60 * 30); // 30 minutos
 
+            // Escenario 1: redirigir al catálogo de museos
             redirigir("/museos", req, res);
 
-        } catch (IllegalStateException | IllegalArgumentException e) {
-            redirigirConError(e.getMessage(), nombre, email, res, req);
-        }
-    }
+        } catch (IllegalStateException e) {
+            // Escenario 2: correo ya registrado
+            req.setAttribute("error", e.getMessage());
+            req.setAttribute("nombre", nombre);
+            req.setAttribute("email", email);
+            irAVista("auth/registro.jsp", req, res);
 
-    /**
-     * Redirige a /login?tab=registro con el mensaje de error y los datos
-     * del formulario para que el usuario no tenga que reescribirlos.
-     */
-    private void redirigirConError(String msg, String nombre, String email,
-            HttpServletResponse res, HttpServletRequest req) throws IOException {
-        StringBuilder url = new StringBuilder(req.getContextPath());
-        url.append("/login?tab=registro");
-        url.append("&error=").append(URLEncoder.encode(msg != null ? msg : "", "UTF-8"));
-        if (nombre != null) url.append("&nombre=").append(URLEncoder.encode(nombre, "UTF-8"));
-        if (email  != null) url.append("&regEmail=").append(URLEncoder.encode(email, "UTF-8"));
-        res.sendRedirect(url.toString());
+        } catch (IllegalArgumentException e) {
+            // Escenario 3: contraseñas no coinciden / Escenario 4: campo inválido
+            req.setAttribute("error", e.getMessage());
+            req.setAttribute("nombre", nombre);
+            req.setAttribute("email", email);
+            irAVista("auth/registro.jsp", req, res);
+        }
     }
 
     private boolean estaVacio(String valor) {

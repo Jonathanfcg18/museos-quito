@@ -17,8 +17,13 @@ import java.io.IOException;
  * Sprint 2 – HU-01: Registrarse en el portal.
  * Responsable Backend: Jonathan Cuasapaz
  *
- * GET  /registro → muestra el formulario (T-01.1).
- * POST /registro → procesa el registro, crea sesión y redirige (T-01.3/T-01.5/T-01.6).
+ * CAMBIOS v2.0 (auth unificado):
+ *   - GET /registro  → redirige a /login?tab=registro (muestra auth.jsp
+ *                       con el tab de registro activo vía JS)
+ *   - POST /registro → en error usa atributo "errorRegistro" (no "error")
+ *                      y pasa "nombreReg" + "emailReg" para repoblar campos
+ *   - La vista destino en errores cambió de "auth/registro.jsp"
+ *     a "auth/auth.jsp"
  */
 @WebServlet(name = "ControladorRegistro", urlPatterns = "/registro")
 public class ControladorRegistro extends ControladorBase {
@@ -30,27 +35,32 @@ public class ControladorRegistro extends ControladorBase {
         servicioAuth = new ServicioAutenticacion();
     }
 
-    /** GET /registro → muestra el formulario de registro. */
+    /**
+     * GET /registro → redirige a /login con el parámetro tab=registro.
+     * El JS en auth.jsp lee el parámetro y activa el tab de registro.
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
         setEncoding(req, res);
 
-        // Si ya tiene sesión activa, redirigir al catálogo (evitar doble registro)
+        // Si ya tiene sesión activa, ir al catálogo
         HttpSession session = req.getSession(false);
         if (session != null && session.getAttribute("usuarioSesion") != null) {
             redirigir("/museos", req, res);
             return;
         }
 
-        irAVista("auth/registro.jsp", req, res);
+        // ── CAMBIO: en vez de mostrar registro.jsp, redirige al auth unificado ──
+        // El parámetro ?tab=registro activa el panel correcto en el JS del auth.jsp
+        res.sendRedirect(req.getContextPath() + "/login?tab=registro");
     }
 
     /**
      * POST /registro → valida, crea la cuenta y genera sesión automática.
      *
-     * T-01.3: valida unicidad del correo (delegado al servicio).
-     * T-01.5: crea registro con rol='visitante', estado='activo'.
+     * T-01.3: valida unicidad del correo.
+     * T-01.5: crea con rol VISITANTE, estado ACTIVO.
      * T-01.6: inicia sesión automáticamente y redirige al catálogo.
      */
     @Override
@@ -65,40 +75,45 @@ public class ControladorRegistro extends ControladorBase {
 
         // Escenario 4: campos vacíos detectados antes de llamar al servicio
         if (estaVacio(nombre) || estaVacio(email) ||
-            estaVacio(password) || estaVacio(confirmar)) {
-            req.setAttribute("error", "Todos los campos son obligatorios.");
-            req.setAttribute("nombre", nombre);
-            req.setAttribute("email", email);
-            irAVista("auth/registro.jsp", req, res);
+                estaVacio(password) || estaVacio(confirmar)) {
+
+            // ── CAMBIO: atributos con sufijo "Reg" + vista auth.jsp ──
+            req.setAttribute("errorRegistro",
+                    "Todos los campos son obligatorios.");
+            req.setAttribute("nombreReg", nombre);
+            req.setAttribute("emailReg",  email);
+            irAVista("auth/auth.jsp", req, res);
             return;
         }
 
         try {
-            // Delegar toda la lógica de negocio al servicio
+            // Delegar toda la lógica al servicio (sin cambios)
             Usuario nuevo = servicioAuth.registrarVisitante(
                     nombre, email, password, confirmar);
 
-            // T-01.6: inicio de sesión automático tras registro exitoso
+            // T-01.6: sesión automática tras registro exitoso
             HttpSession session = req.getSession(true);
             session.setAttribute("usuarioSesion", nuevo);
             session.setMaxInactiveInterval(60 * 30); // 30 minutos
 
-            // Escenario 1: redirigir al catálogo de museos
+            // Escenario 1: redirigir al catálogo
             redirigir("/museos", req, res);
 
         } catch (IllegalStateException e) {
             // Escenario 2: correo ya registrado
-            req.setAttribute("error", e.getMessage());
-            req.setAttribute("nombre", nombre);
-            req.setAttribute("email", email);
-            irAVista("auth/registro.jsp", req, res);
+            // ── CAMBIO: atributos con sufijo "Reg" + vista auth.jsp ──
+            req.setAttribute("errorRegistro", e.getMessage());
+            req.setAttribute("nombreReg", nombre);
+            req.setAttribute("emailReg",  email);
+            irAVista("auth/auth.jsp", req, res);
 
         } catch (IllegalArgumentException e) {
-            // Escenario 3: contraseñas no coinciden / Escenario 4: campo inválido
-            req.setAttribute("error", e.getMessage());
-            req.setAttribute("nombre", nombre);
-            req.setAttribute("email", email);
-            irAVista("auth/registro.jsp", req, res);
+            // Escenario 3: contraseñas no coinciden / campo inválido
+            // ── CAMBIO: atributos con sufijo "Reg" + vista auth.jsp ──
+            req.setAttribute("errorRegistro", e.getMessage());
+            req.setAttribute("nombreReg", nombre);
+            req.setAttribute("emailReg",  email);
+            irAVista("auth/auth.jsp", req, res);
         }
     }
 

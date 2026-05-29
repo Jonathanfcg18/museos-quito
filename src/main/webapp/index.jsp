@@ -7,15 +7,29 @@
 <!-- ===== HERO con carrusel de museos ===== -->
 <section class="hero" aria-label="Bienvenida al Portal de Cultura Quito">
 
+  <%--
+    IMÁGENES: Se usan las URLs Special:FilePath de Wikimedia Commons.
+    El navegador sigue el redirect 302 automáticamente y carga la imagen.
+    NO cambiar a upload.wikimedia.org/thumb/ → esas URLs requieren Referer
+    de wikimedia.org y el navegador las bloquea desde páginas externas.
+  --%>
   <div class="hero-carousel" aria-hidden="true">
-    <div class="hero-slide" id="slide-0" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Museo_Nacional_del_Ecuador_%28MUNA%29%2C_ingreso.jpg/1280px-Museo_Nacional_del_Ecuador_%28MUNA%29%2C_ingreso.jpg')"></div>
-    <div class="hero-slide" id="slide-1" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Centro_cultural_iberoamericano_%22Capilla_del_Hombre%22_%286267211714%29.jpg/1280px-Centro_cultural_iberoamericano_%22Capilla_del_Hombre%22_%286267211714%29.jpg')"></div>
-    <div class="hero-slide" id="slide-2" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/%28Museo_Casa_del_Alabado%29_1st_floor%2C_courtyard_stone_floor_%28pic.a1a%29.JPG/1280px-%28Museo_Casa_del_Alabado%29_1st_floor%2C_courtyard_stone_floor_%28pic.a1a%29.JPG')"></div>
-    <div class="hero-slide" id="slide-3" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Exposici%C3%B3n_Zoom_un_viajje_en_el_agua.jpg/1280px-Exposici%C3%B3n_Zoom_un_viajje_en_el_agua.jpg')"></div>
-    <div class="hero-slide" id="slide-4" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Capilla_de_Cantu%C3%B1a_%28Iglesia_de_San_Francisco%2C_Quito%29_pic._a1_%28interior%29.jpg/1280px-Capilla_de_Cantu%C3%B1a_%28Iglesia_de_San_Francisco%2C_Quito%29_pic._a1_%28interior%29.jpg')"></div>
-    <div class="hero-slide" id="slide-5" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Centro_Cultural_Metropolitano_%28pic._a028%29.JPG/1280px-Centro_Cultural_Metropolitano_%28pic._a028%29.JPG')"></div>
-    <div class="hero-slide" id="slide-6" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Ecuador_SanAntoniodePichincha_MuseoIntiNan.JPG/1280px-Ecuador_SanAntoniodePichincha_MuseoIntiNan.JPG')"></div>
-    <div class="hero-slide" id="slide-7" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Museo_de_la_Ciudad%2C_Quito_%28exterior_sign%29.JPG/1280px-Museo_de_la_Ciudad%2C_Quito_%28exterior_sign%29.JPG')"></div>
+    <div class="hero-slide" data-index="0"
+         style="background-image:url('https://commons.wikimedia.org/wiki/Special:FilePath/Museo_Nacional_del_Ecuador_(MUNA),_ingreso.jpg')"></div>
+    <div class="hero-slide" data-index="1"
+         style="background-image:url('https://commons.wikimedia.org/wiki/Special:FilePath/Centro_cultural_iberoamericano_%22Capilla_del_Hombre%22_(6267211714).jpg')"></div>
+    <div class="hero-slide" data-index="2"
+         style="background-image:url('https://commons.wikimedia.org/wiki/Special:FilePath/(Museo_Casa_del_Alabado)_1st_floor,_courtyard_stone_floor_(pic.a1a).JPG')"></div>
+    <div class="hero-slide" data-index="3"
+         style="background-image:url('https://commons.wikimedia.org/wiki/Special:FilePath/Exposición_Zoom_un_viajje_en_el_agua.jpg')"></div>
+    <div class="hero-slide" data-index="4"
+         style="background-image:url('https://commons.wikimedia.org/wiki/Special:FilePath/Capilla_de_Cantuña_(Iglesia_de_San_Francisco,_Quito)_pic._a1_(interior).jpg')"></div>
+    <div class="hero-slide" data-index="5"
+         style="background-image:url('https://commons.wikimedia.org/wiki/Special:FilePath/Centro_Cultural_Metropolitano_(pic._a028).JPG')"></div>
+    <div class="hero-slide" data-index="6"
+         style="background-image:url('https://commons.wikimedia.org/wiki/Special:FilePath/Ecuador_SanAntoniodePichincha_MuseoIntiNan.JPG')"></div>
+    <div class="hero-slide" data-index="7"
+         style="background-image:url('https://commons.wikimedia.org/wiki/Special:FilePath/Museo_de_la_Ciudad,_Quito_(exterior_sign).JPG')"></div>
   </div>
 
   <div class="hero-overlay" aria-hidden="true"></div>
@@ -36,6 +50,7 @@
     </div>
   </div>
 
+  <!-- Dots: data-index mapea 1:1 con los slides -->
   <div class="carousel-dots" role="tablist" aria-label="Museos en el carrusel">
     <button class="carousel-dot active" data-index="0" aria-label="Museo Nacional"></button>
     <button class="carousel-dot" data-index="1" aria-label="Capilla del Hombre"></button>
@@ -48,11 +63,11 @@
   </div>
 </section>
 
-<!-- ===== Features con canvas de partículas ===== -->
+<!-- ===== Features con partículas WebGL ===== -->
 <section class="features" aria-labelledby="features-titulo">
   <canvas id="featuresGl" aria-hidden="true"></canvas>
-  <div class="container" style="position:relative;z-index:1;">
-    <h2 class="section-title" id="features-titulo" style="color:#fff;">¿Qué puedes hacer aquí?</h2>
+  <div class="container">
+    <h2 class="section-title" id="features-titulo">¿Qué puedes hacer aquí?</h2>
     <div class="features-grid">
 
       <div class="feature-card" style="animation-delay:0.1s">
@@ -84,19 +99,19 @@
 </section>
 
 <!-- ===== Stats strip ===== -->
-<section style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));padding:2.5rem 2rem;color:#fff;">
+<section style="background:linear-gradient(135deg,#3d1c06,#2C1810);padding:2.5rem 2rem;color:#fff;">
   <div class="container">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:2rem;text-align:center;max-width:800px;margin:0 auto;">
       <div>
-        <div style="font-family:var(--font-display);font-size:2.5rem;font-weight:900;color:var(--accent);text-shadow:0 0 20px rgba(212,168,67,0.6);">8</div>
+        <div style="font-family:var(--font-display);font-size:2.5rem;font-weight:900;color:#D4A843;text-shadow:0 0 20px rgba(212,168,67,0.6);">8</div>
         <div style="font-size:0.9rem;opacity:0.85;">Museos disponibles</div>
       </div>
       <div>
-        <div style="font-family:var(--font-display);font-size:2.5rem;font-weight:900;color:var(--accent);text-shadow:0 0 20px rgba(212,168,67,0.6);">∞</div>
+        <div style="font-family:var(--font-display);font-size:2.5rem;font-weight:900;color:#D4A843;text-shadow:0 0 20px rgba(212,168,67,0.6);">∞</div>
         <div style="font-size:0.9rem;opacity:0.85;">Horarios por semana</div>
       </div>
       <div>
-        <div style="font-family:var(--font-display);font-size:2.5rem;font-weight:900;color:var(--accent);text-shadow:0 0 20px rgba(212,168,67,0.6);">0</div>
+        <div style="font-family:var(--font-display);font-size:2.5rem;font-weight:900;color:#D4A843;text-shadow:0 0 20px rgba(212,168,67,0.6);">0</div>
         <div style="font-size:0.9rem;opacity:0.85;">Filas en la entrada</div>
       </div>
     </div>
@@ -105,134 +120,170 @@
 
 <script>
 /* ============================================================
-   CARRUSEL – control 100% JS, los dots realmente cambian slide
+   CARRUSEL – 100% JS
+   goTo(i) → quita .carousel-active del slide actual,
+             lo pone en el slide[i] y actualiza el dot.
+   Los dots llaman goTo(data-index) y reinician el timer.
    ============================================================ */
 (function () {
   var slides  = document.querySelectorAll('.hero-slide');
   var dots    = document.querySelectorAll('.carousel-dot');
   var current = 0;
-  var timer;
-  var DURATION = 5000;
+  var timer   = null;
+  var DELAY   = 5000;
 
-  /* Mostrar slide activo, ocultar el resto */
-  function goTo(index) {
+  function showSlide(index) {
+    /* quitar activo anterior */
     slides[current].classList.remove('carousel-active');
     dots[current].classList.remove('active');
+    /* nuevo activo */
     current = (index + slides.length) % slides.length;
     slides[current].classList.add('carousel-active');
     dots[current].classList.add('active');
   }
 
-  /* Arrancar auto-play */
   function startAuto() {
     clearInterval(timer);
-    timer = setInterval(function () { goTo(current + 1); }, DURATION);
+    timer = setInterval(function () { showSlide(current + 1); }, DELAY);
   }
 
-  /* Click en dot → ir a ese slide y reiniciar contador */
+  /* Click en dot → ir a ese slide */
   dots.forEach(function (dot) {
     dot.addEventListener('click', function () {
-      var idx = parseInt(dot.dataset.index, 10);
-      goTo(idx);
-      startAuto();
+      showSlide(parseInt(dot.dataset.index, 10));
+      startAuto(); /* reiniciar contador */
     });
   });
 
-  /* Init */
-  goTo(0);
+  /* Inicializar: mostrar slide 0 y arrancar auto-play */
+  showSlide(0);
   startAuto();
 })();
 
 /* ============================================================
    PARTÍCULAS WebGL – sección features
+   Paleta de colores marrón/dorado del portal.
+   Reacciona al movimiento del mouse repeliendo partículas.
    ============================================================ */
 (function () {
-  var canvas = document.getElementById('featuresGl');
+  var canvas  = document.getElementById('featuresGl');
   if (!canvas) return;
   var section = canvas.closest('.features');
   if (!section) return;
   var gl = canvas.getContext('webgl');
-  if (!gl) return;
+  if (!gl) return;  /* fallback silencioso si el dispositivo no soporta WebGL */
 
+  /* Paleta de colores: tonos marrón, dorado y cobre del portal */
   var PALETTE = [
     [0.42,0.18,0.03],[0.29,0.12,0.02],
     [0.60,0.30,0.10],[0.68,0.47,0.05],
     [0.80,0.65,0.28],[0.54,0.32,0.15],
     [0.20,0.10,0.04],[0.36,0.16,0.07],
-    [0.45,0.28,0.10],[0.62,0.38,0.16],
+    [0.45,0.28,0.10],[0.62,0.38,0.16]
   ];
-  var NUM = 800;
+  var NUM     = 800;
   var bufData = new Float32Array(NUM * 7);
-  var particles = [];
+  var ptcls   = [];
 
   for (var i = 0; i < NUM; i++) {
     var a = Math.random() * Math.PI * 2;
     var c = PALETTE[Math.floor(Math.random() * PALETTE.length)];
-    particles.push({
-      x: Math.cos(a)*Math.random()*1.2, y: Math.sin(a)*Math.random()*1.2,
-      vx:0, vy:0, size:5+Math.random()*20, phase:Math.random()*100,
-      r:c[0], g:c[1], b:c[2], alpha:0.12+Math.random()*0.25
+    ptcls.push({
+      x: Math.cos(a)*Math.random()*1.2,
+      y: Math.sin(a)*Math.random()*1.2,
+      vx:0, vy:0,
+      size:  5 + Math.random() * 20,
+      phase: Math.random() * 100,
+      r: c[0], g: c[1], b: c[2],
+      alpha: 0.12 + Math.random() * 0.25
     });
   }
 
   function resize() {
     var rect = section.getBoundingClientRect();
-    var w=rect.width, h=rect.height;
-    if (!w||!h) return;
-    var dpr = Math.min(window.devicePixelRatio||1, 2);
-    canvas.width=w*dpr; canvas.height=h*dpr;
-    canvas.style.width=w+'px'; canvas.style.height=h+'px';
-    gl.viewport(0,0,canvas.width,canvas.height);
+    var w = rect.width, h = rect.height;
+    if (!w || !h) return;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width  = w * dpr; canvas.height = h * dpr;
+    canvas.style.width  = w + 'px';
+    canvas.style.height = h + 'px';
+    gl.viewport(0, 0, canvas.width, canvas.height);
   }
   window.addEventListener('resize', resize);
   if (window.ResizeObserver) new ResizeObserver(resize).observe(section);
   resize();
 
-  function mkShader(t,s){var sh=gl.createShader(t);gl.shaderSource(sh,s);gl.compileShader(sh);return sh;}
-  var prog=gl.createProgram();
-  gl.attachShader(prog,mkShader(gl.VERTEX_SHADER,'attribute vec2 a_position;attribute float a_size;attribute vec4 a_color;varying vec4 v_color;void main(){gl_Position=vec4(a_position,0.,1.);gl_PointSize=a_size;v_color=a_color;}'));
-  gl.attachShader(prog,mkShader(gl.FRAGMENT_SHADER,'precision mediump float;varying vec4 v_color;void main(){vec2 c=gl_PointCoord*2.-1.;float d=length(c);if(d>1.)discard;float core=1.-smoothstep(0.,.6,d);float glow=exp(-d*3.)*.5;gl_FragColor=vec4(v_color.rgb,(core+glow)*v_color.a);}'));
+  function mkShader(type, src) {
+    var sh = gl.createShader(type);
+    gl.shaderSource(sh, src); gl.compileShader(sh);
+    return sh;
+  }
+  var prog = gl.createProgram();
+  gl.attachShader(prog, mkShader(gl.VERTEX_SHADER,
+    'attribute vec2 a_pos;attribute float a_sz;attribute vec4 a_col;' +
+    'varying vec4 v_col;void main(){gl_Position=vec4(a_pos,0.,1.);' +
+    'gl_PointSize=a_sz;v_col=a_col;}'));
+  gl.attachShader(prog, mkShader(gl.FRAGMENT_SHADER,
+    'precision mediump float;varying vec4 v_col;' +
+    'void main(){vec2 c=gl_PointCoord*2.-1.;float d=length(c);' +
+    'if(d>1.)discard;float core=1.-smoothstep(0.,.6,d);' +
+    'float glow=exp(-d*3.)*.5;gl_FragColor=vec4(v_col.rgb,(core+glow)*v_col.a);}'));
   gl.linkProgram(prog); gl.useProgram(prog);
-  gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA,gl.ONE);
-  gl.clearColor(0.08,0.04,0.01,1.0);
+  gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+  gl.clearColor(0.08, 0.04, 0.01, 1.0);
 
-  var buf=gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER,buf);
-  gl.bufferData(gl.ARRAY_BUFFER,bufData,gl.DYNAMIC_DRAW);
-  var stride=28;
-  var pl=gl.getAttribLocation(prog,'a_position');
-  gl.enableVertexAttribArray(pl);gl.vertexAttribPointer(pl,2,gl.FLOAT,false,stride,0);
-  var sl=gl.getAttribLocation(prog,'a_size');
-  gl.enableVertexAttribArray(sl);gl.vertexAttribPointer(sl,1,gl.FLOAT,false,stride,8);
-  var cl=gl.getAttribLocation(prog,'a_color');
-  gl.enableVertexAttribArray(cl);gl.vertexAttribPointer(cl,4,gl.FLOAT,false,stride,12);
+  var buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, bufData, gl.DYNAMIC_DRAW);
+  var stride = 28;
+  var pl = gl.getAttribLocation(prog,'a_pos');
+  gl.enableVertexAttribArray(pl); gl.vertexAttribPointer(pl,2,gl.FLOAT,false,stride,0);
+  var sl = gl.getAttribLocation(prog,'a_sz');
+  gl.enableVertexAttribArray(sl); gl.vertexAttribPointer(sl,1,gl.FLOAT,false,stride,8);
+  var cl = gl.getAttribLocation(prog,'a_col');
+  gl.enableVertexAttribArray(cl); gl.vertexAttribPointer(cl,4,gl.FLOAT,false,stride,12);
 
-  var mx=0,my=0,mA=false;
-  section.addEventListener('mousemove',function(e){var r=canvas.getBoundingClientRect();mx=((e.clientX-r.left)/r.width)*2-1;my=-((e.clientY-r.top)/r.height)*2+1;mA=true;});
-  section.addEventListener('mouseleave',function(){mA=false;});
+  var mx = 0, my = 0, mActive = false;
+  section.addEventListener('mousemove', function (e) {
+    var r = canvas.getBoundingClientRect();
+    mx = ((e.clientX - r.left) / r.width)  * 2 - 1;
+    my = -((e.clientY - r.top)  / r.height) * 2 + 1;
+    mActive = true;
+  });
+  section.addEventListener('mouseleave', function () { mActive = false; });
 
-  function loop(now){
-    var t=now*0.001;
-    var repelR=0.25,repelS=0.004;
-    for(var i=0;i<NUM;i++){
-      var p=particles[i];
-      var sp=0.1+p.size*0.008;
-      p.vx+=(Math.sin(t*0.25+p.phase)*0.4+Math.sin(t*0.15+p.phase*1.7)*0.3)*0.0003*sp;
-      p.vy+=(Math.cos(t*0.20+p.phase*1.3)*0.4+Math.cos(t*0.18+p.phase*2.1)*0.3)*0.0003*sp;
-      p.vx*=0.98;p.vy*=0.98;
-      if(mA){var dx=mx-p.x,dy=my-p.y;var dist=Math.sqrt(dx*dx+dy*dy);
-        if(dist<repelR&&dist>0.001){var f=(repelR-dist)/repelR*repelS/(dist*0.5+0.1);var nd=Math.sqrt(dx*dx+dy*dy);if(nd>0.001){p.vx-=(dx/nd)*f;p.vy-=(dy/nd)*f;}}
+  function loop(now) {
+    var t = now * 0.001;
+    var rR = 0.25, rS = 0.004;
+    for (var i = 0; i < NUM; i++) {
+      var p  = ptcls[i];
+      var sp = 0.1 + p.size * 0.008;
+      p.vx += (Math.sin(t*0.25+p.phase)*0.4 + Math.sin(t*0.15+p.phase*1.7)*0.3)*0.0003*sp;
+      p.vy += (Math.cos(t*0.20+p.phase*1.3)*0.4 + Math.cos(t*0.18+p.phase*2.1)*0.3)*0.0003*sp;
+      p.vx *= 0.98; p.vy *= 0.98;
+      if (mActive) {
+        var dx = mx - p.x, dy = my - p.y;
+        var dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < rR && dist > 0.001) {
+          var f  = (rR - dist) / rR * rS / (dist*0.5 + 0.1);
+          var nd = Math.sqrt(dx*dx + dy*dy);
+          if (nd > 0.001) { p.vx -= (dx/nd)*f; p.vy -= (dy/nd)*f; }
+        }
       }
-      p.x+=p.vx;p.y+=p.vy;
-      var m=0.05;
-      if(p.x>1+m)p.x=-1-m;if(p.x<-1-m)p.x=1+m;
-      if(p.y>1+m)p.y=-1-m;if(p.y<-1-m)p.y=1+m;
-      var idx=i*7;
-      bufData[idx]=p.x;bufData[idx+1]=p.y;bufData[idx+2]=p.size;
-      bufData[idx+3]=p.r;bufData[idx+4]=p.g;bufData[idx+5]=p.b;bufData[idx+6]=p.alpha;
+      p.x += p.vx; p.y += p.vy;
+      var m = 0.05;
+      if (p.x >  1+m) p.x = -1-m;
+      if (p.x < -1-m) p.x =  1+m;
+      if (p.y >  1+m) p.y = -1-m;
+      if (p.y < -1-m) p.y =  1+m;
+      var idx = i * 7;
+      bufData[idx]=p.x; bufData[idx+1]=p.y; bufData[idx+2]=p.size;
+      bufData[idx+3]=p.r; bufData[idx+4]=p.g; bufData[idx+5]=p.b; bufData[idx+6]=p.alpha;
     }
-    gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferSubData(gl.ARRAY_BUFFER,0,bufData);
-    gl.clear(gl.COLOR_BUFFER_BIT);gl.drawArrays(gl.POINTS,0,NUM);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, bufData);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.POINTS, 0, NUM);
     requestAnimationFrame(loop);
   }
   requestAnimationFrame(loop);

@@ -377,6 +377,7 @@ body.dark-mode .navbar {
     padding: 5rem 0;
     position: relative;
     overflow: hidden;
+    /* Fondo oscuro fijo — la sección siempre usa partículas oscuras */
     background: linear-gradient(135deg, #2C1810 0%, #3d1c06 100%);
 }
 .features .container { position: relative; z-index: 1; }
@@ -397,6 +398,11 @@ body.dark-mode .navbar {
     font-size: 1.9rem;
     margin-bottom: 2.5rem;
     color: var(--primary);
+}
+/* Dentro de .features el fondo es siempre oscuro → título dorado/blanco */
+.features .section-title {
+    color: #D4A843;
+    text-shadow: 0 0 20px rgba(212, 168, 67, 0.4);
 }
 
 .features-grid {
@@ -446,6 +452,21 @@ body.dark-mode .navbar {
     font-family: var(--font-display);
     margin-bottom: 0.5rem;
     color: var(--primary);
+}
+/* Feature cards siempre sobre fondo oscuro → glass oscuro + texto claro */
+.features .feature-card {
+    background: rgba(20, 10, 5, 0.55);
+    border-color: rgba(212, 168, 67, 0.22);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+}
+.features .feature-card h3 {
+    color: #D4A843;
+}
+.features .feature-card p {
+    color: rgba(245, 237, 216, 0.82);
+}
+.features .feature-card:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 24px rgba(212,168,67,0.35);
 }
 
 /* ============================================================
@@ -1733,3 +1754,217 @@ input:checked + .slider::before { transform: translateX(22px); }
     .auth-wrapper { padding: 1rem; }
     .page-header h1 { font-size: 1.6rem; }
 }
+
+/* ============================================================
+   DARK MODE – OVERRIDES EXPLÍCITOS
+   Cubren elementos que usan colores hardcodeados o que
+   necesitan ajuste específico al cambiar de tema
+   ============================================================ */
+
+/* Navbar en dark mode */
+body.dark-mode .navbar {
+    background: rgba(10, 5, 2, 0.95);
+    border-bottom: 1px solid rgba(212, 168, 67, 0.2);
+}
+
+/* Footer en dark mode */
+body.dark-mode .footer {
+    background: linear-gradient(135deg, #080402 0%, #0f0805 100%);
+    border-top: 1px solid rgba(212, 168, 67, 0.15);
+}
+
+/* Alertas en dark mode */
+body.dark-mode .alert-error {
+    background: rgba(198, 40, 40, 0.15);
+    border-left-color: #EF5350;
+}
+body.dark-mode .alert-success {
+    background: rgba(46, 125, 50, 0.15);
+    border-left-color: #66BB6A;
+}
+
+/* Detalle card en dark mode */
+body.dark-mode .detalle-card {
+    background: rgba(20, 10, 5, 0.7);
+    border-color: rgba(212, 168, 67, 0.15);
+}
+body.dark-mode .detalle-card h2 { color: #D4A843; }
+
+/* Horarios en dark mode */
+body.dark-mode .horario-item:hover {
+    background: rgba(212, 168, 67, 0.08);
+}
+
+/* Precios tabla en dark mode */
+body.dark-mode .precios-tabla td {
+    border-bottom-color: rgba(212, 168, 67, 0.12);
+    color: var(--text);
+}
+
+/* Reserva card highlight en dark mode */
+body.dark-mode .reserva-card {
+    background: rgba(212, 168, 67, 0.05);
+    border-color: rgba(212, 168, 67, 0.3);
+}
+
+/* Filtros bar en dark mode */
+body.dark-mode .filtros-bar {
+    background: rgba(20, 10, 5, 0.6);
+    border-color: rgba(212, 168, 67, 0.15);
+}
+body.dark-mode .input-busqueda {
+    background: rgba(20, 10, 5, 0.8);
+    border-color: rgba(58, 34, 24, 0.8);
+    color: var(--text);
+}
+body.dark-mode .input-busqueda::placeholder { color: var(--text-muted); }
+body.dark-mode .input-busqueda:focus {
+    border-color: #D4A843;
+    box-shadow: 0 0 0 3px rgba(212, 168, 67, 0.15);
+}
+
+/* Museo card en dark mode */
+body.dark-mode .museo-card {
+    background: rgba(20, 10, 5, 0.85);
+    border-color: rgba(58, 34, 24, 0.8);
+}
+body.dark-mode .museo-nombre { color: #D4A843; }
+body.dark-mode .museo-card-footer {
+    border-top-color: rgba(58, 34, 24, 0.8);
+}
+body.dark-mode .museo-img-placeholder {
+    background: linear-gradient(135deg, #1a0f0a, #2a1810);
+}
+
+/* Badge en dark mode */
+body.dark-mode .badge {
+    background: rgba(20, 10, 5, 0.7);
+    border-color: rgba(58, 34, 24, 0.8);
+    color: var(--text-muted);
+}
+
+/* Form control en dark mode */
+body.dark-mode .form-control {
+    background: rgba(20, 10, 5, 0.8);
+    border-color: rgba(58, 34, 24, 0.8);
+    color: var(--text);
+}
+body.dark-mode .form-control::placeholder { color: var(--text-muted); }
+body.dark-mode .form-control:focus {
+    border-color: #D4A843;
+    box-shadow: 0 0 0 3px rgba(212, 168, 67, 0.15);
+}
+
+/* Franjas de horario en dark mode */
+body.dark-mode .franja-item {
+    background: rgba(20, 10, 5, 0.7);
+    border-color: rgba(58, 34, 24, 0.8);
+}
+body.dark-mode .franja-disponible:hover {
+    background: rgba(46, 125, 50, 0.08);
+    border-color: #66BB6A;
+}
+body.dark-mode .franja-seleccionada {
+    background: rgba(212, 168, 67, 0.08);
+    border-color: #D4A843;
+}
+body.dark-mode .franja-agotada {
+    background: rgba(10, 5, 2, 0.5);
+}
+
+/* Panel reserva en dark mode */
+body.dark-mode .form-reserva-panel {
+    background: rgba(20, 10, 5, 0.7);
+    border-color: rgba(212, 168, 67, 0.18);
+}
+
+/* Modal en dark mode */
+body.dark-mode .modal-box {
+    background: rgba(20, 10, 5, 0.92);
+    border-color: rgba(212, 168, 67, 0.2);
+}
+
+/* Stats strip ya tiene colores hardcodeados marrones — se ve bien en ambos modos */
+/* No necesita override */
+
+/* Sección de confirmación en dark mode */
+body.dark-mode .confirmacion-box {
+    background: rgba(20, 10, 5, 0.7);
+    border-color: rgba(212, 168, 67, 0.2);
+}
+body.dark-mode .confirmacion-detalle {
+    background: rgba(15, 8, 5, 0.8);
+    border-color: rgba(58, 34, 24, 0.8);
+}
+body.dark-mode .conf-row {
+    border-bottom-color: rgba(58, 34, 24, 0.8);
+}
+body.dark-mode .conf-row:hover { background: rgba(212, 168, 67, 0.05); }
+
+/* Reservas lista en dark mode */
+body.dark-mode .reserva-card-panel {
+    background: rgba(20, 10, 5, 0.6);
+    border-color: rgba(58, 34, 24, 0.6);
+}
+body.dark-mode .reserva-panel-header {
+    background: rgba(212, 168, 67, 0.06);
+    border-bottom-color: rgba(58, 34, 24, 0.6);
+}
+body.dark-mode .reserva-panel-footer {
+    border-top-color: rgba(58, 34, 24, 0.6);
+}
+
+/* Login box en dark mode */
+body.dark-mode .login-box {
+    background: rgba(20, 10, 5, 0.8);
+    border-color: rgba(212, 168, 67, 0.2);
+}
+
+/* Admin items en dark mode */
+body.dark-mode .franja-admin-item {
+    background: rgba(20, 10, 5, 0.6);
+    border-color: rgba(58, 34, 24, 0.6);
+}
+
+/* Settings panel en dark mode */
+body.dark-mode .settings-panel {
+    background: rgba(10, 5, 2, 0.95);
+    border-color: rgba(212, 168, 67, 0.2);
+}
+body.dark-mode .settings-header {
+    background: rgba(212, 168, 67, 0.06);
+    border-bottom-color: rgba(212, 168, 67, 0.15);
+}
+body.dark-mode .settings-header h2,
+body.dark-mode .settings-header h3 { color: #D4A843; }
+
+/* Fecha tabs en dark mode */
+body.dark-mode .fecha-tab {
+    background: rgba(20, 10, 5, 0.7);
+    border-color: rgba(58, 34, 24, 0.8);
+    color: var(--text-muted);
+}
+body.dark-mode .fecha-tab.active,
+body.dark-mode .fecha-tab:hover {
+    background: #8B4513;
+    border-color: #8B4513;
+    color: #fff;
+}
+
+/* Btn secondary en dark mode */
+body.dark-mode .btn-secondary {
+    background: rgba(20, 10, 5, 0.7);
+    border-color: rgba(58, 34, 24, 0.8);
+    color: var(--text);
+}
+body.dark-mode .btn-secondary:hover {
+    border-color: #D4A843;
+    background: rgba(212, 168, 67, 0.1);
+}
+
+/* Breadcrumb en dark mode */
+body.dark-mode .breadcrumb a { color: #D4A843; }
+body.dark-mode .breadcrumb { color: var(--text-muted); }
+
+/* Empty state en dark mode */
+body.dark-mode .empty-state { color: var(--text-muted); }

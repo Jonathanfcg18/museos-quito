@@ -63,20 +63,20 @@ body.dark-mode {
     --primary-dark:   #B8860B;
     --primary-light:  #E8C05A;
     --accent:         #8B4513;
-    --bg:             #0f0805;
-    --surface:        #1a0f0a;
-    --border:         #3a2218;
+    --bg:             #0a0502;
+    --surface:        #1e1008;
+    --border:         #4a2c18;
     --text:           #F5EDD8;
     --text-muted:     #A89880;
-    --glass-bg:       rgba(20, 10, 5, 0.55);
-    --glass-border:   rgba(212, 168, 67, 0.25);
-    --glass-shadow:   0 8px 32px rgba(212, 168, 67, 0.12);
+    --glass-bg:       rgba(35, 18, 8, 0.80);
+    --glass-border:   rgba(212, 168, 67, 0.30);
+    --glass-shadow:   0 8px 32px rgba(0, 0, 0, 0.45);
     --neon-primary:   rgba(212, 168, 67, 0.75);
     --neon-accent:    rgba(139, 69, 19, 0.7);
-    --shadow:         0 2px 16px rgba(0, 0, 0, 0.4);
-    --shadow-hover:   0 8px 32px rgba(0, 0, 0, 0.55);
-    --gradient-card:  linear-gradient(145deg, rgba(212,168,67,0.08) 0%, rgba(139,69,19,0.04) 100%);
-    --gradient-glass: linear-gradient(135deg, rgba(212,168,67,0.10) 0%, rgba(0,0,0,0.25) 100%);
+    --shadow:         0 2px 16px rgba(0, 0, 0, 0.5);
+    --shadow-hover:   0 8px 32px rgba(0, 0, 0, 0.7);
+    --gradient-card:  linear-gradient(145deg, rgba(212,168,67,0.10) 0%, rgba(139,69,19,0.05) 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(212,168,67,0.12) 0%, rgba(10,5,2,0.60) 100%);
 }
 
 /* ── Font Scale ── */
@@ -1755,216 +1755,355 @@ input:checked + .slider::before { transform: translateX(22px); }
     .page-header h1 { font-size: 1.6rem; }
 }
 
+
 /* ============================================================
-   DARK MODE – OVERRIDES EXPLÍCITOS
-   Cubren elementos que usan colores hardcodeados o que
-   necesitan ajuste específico al cambiar de tema
+   DARK MODE – OVERRIDES CON ALTO CONTRASTE
+   Garantizan que cada capa sea visualmente distinta:
+   Fondo (#0a0502) → Surface (#1e1008) → Glass (#231208 80%)
    ============================================================ */
 
-/* Navbar en dark mode */
+/* Navbar */
 body.dark-mode .navbar {
-    background: rgba(10, 5, 2, 0.95);
-    border-bottom: 1px solid rgba(212, 168, 67, 0.2);
+    background: rgba(8, 4, 1, 0.97);
+    border-bottom: 1px solid rgba(212, 168, 67, 0.25);
+    box-shadow: 0 2px 20px rgba(0,0,0,0.6);
 }
 
-/* Footer en dark mode */
+/* Footer */
 body.dark-mode .footer {
-    background: linear-gradient(135deg, #080402 0%, #0f0805 100%);
-    border-top: 1px solid rgba(212, 168, 67, 0.15);
+    background: linear-gradient(135deg, #060301 0%, #0a0502 100%);
+    border-top: 1px solid rgba(212, 168, 67, 0.18);
 }
 
-/* Alertas en dark mode */
+/* ── Alertas ── */
 body.dark-mode .alert-error {
-    background: rgba(198, 40, 40, 0.15);
+    background: rgba(198, 40, 40, 0.18);
     border-left-color: #EF5350;
+    color: #FF8A80;
 }
 body.dark-mode .alert-success {
-    background: rgba(46, 125, 50, 0.15);
+    background: rgba(46, 125, 50, 0.18);
     border-left-color: #66BB6A;
+    color: #A5D6A7;
 }
 
-/* Detalle card en dark mode */
+/* ── Cards genéricas (detalle-card) ── */
 body.dark-mode .detalle-card {
-    background: rgba(20, 10, 5, 0.7);
-    border-color: rgba(212, 168, 67, 0.15);
+    background: #1e1008;
+    border: 1px solid #4a2c18;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
 body.dark-mode .detalle-card h2 { color: #D4A843; }
+body.dark-mode .detalle-card p  { color: #c8b49a; }
 
-/* Horarios en dark mode */
-body.dark-mode .horario-item:hover {
-    background: rgba(212, 168, 67, 0.08);
-}
+/* ── Horarios ── */
+body.dark-mode .horario-item { border-bottom: none; }
+body.dark-mode .horario-item:hover { background: rgba(212, 168, 67, 0.08); border-radius: 6px; }
+body.dark-mode .horario-dia  { color: #F5EDD8; }
+body.dark-mode .horario-hora { color: #A89880; }
 
-/* Precios tabla en dark mode */
-body.dark-mode .precios-tabla td {
-    border-bottom-color: rgba(212, 168, 67, 0.12);
-    color: var(--text);
-}
+/* ── Precios tabla ── */
+body.dark-mode .precios-tabla td { border-bottom: 1px solid #4a2c18; color: #F5EDD8; }
+body.dark-mode .precios-tabla td strong { color: #D4A843; }
 
-/* Reserva card highlight en dark mode */
+/* ── Reserva card destacada ── */
 body.dark-mode .reserva-card {
-    background: rgba(212, 168, 67, 0.05);
-    border-color: rgba(212, 168, 67, 0.3);
+    background: rgba(212, 168, 67, 0.06);
+    border: 1px solid rgba(212, 168, 67, 0.35);
 }
+body.dark-mode .reserva-card h2 { color: #D4A843; }
 
-/* Filtros bar en dark mode */
+/* ── Filtros bar ── */
 body.dark-mode .filtros-bar {
-    background: rgba(20, 10, 5, 0.6);
-    border-color: rgba(212, 168, 67, 0.15);
+    background: #1e1008;
+    border: 1px solid #4a2c18;
 }
 body.dark-mode .input-busqueda {
-    background: rgba(20, 10, 5, 0.8);
-    border-color: rgba(58, 34, 24, 0.8);
-    color: var(--text);
+    background: #150a04;
+    border: 1px solid #4a2c18;
+    color: #F5EDD8;
 }
-body.dark-mode .input-busqueda::placeholder { color: var(--text-muted); }
+body.dark-mode .input-busqueda::placeholder { color: #7a6458; }
 body.dark-mode .input-busqueda:focus {
     border-color: #D4A843;
-    box-shadow: 0 0 0 3px rgba(212, 168, 67, 0.15);
+    box-shadow: 0 0 0 3px rgba(212, 168, 67, 0.18), 0 0 14px rgba(212, 168, 67, 0.2);
 }
 
-/* Museo card en dark mode */
+/* ── Museo cards ── */
 body.dark-mode .museo-card {
-    background: rgba(20, 10, 5, 0.85);
-    border-color: rgba(58, 34, 24, 0.8);
+    background: #1e1008;
+    border: 1px solid #4a2c18;
 }
-body.dark-mode .museo-nombre { color: #D4A843; }
-body.dark-mode .museo-card-footer {
-    border-top-color: rgba(58, 34, 24, 0.8);
+body.dark-mode .museo-card:hover {
+    border-color: rgba(212, 168, 67, 0.5);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 28px rgba(212,168,67,0.2);
 }
+body.dark-mode .museo-nombre    { color: #D4A843; }
+body.dark-mode .museo-descripcion { color: #c8b49a; }
+body.dark-mode .museo-ubicacion { color: #A89880; }
+body.dark-mode .museo-card-footer { border-top: 1px solid #4a2c18; }
 body.dark-mode .museo-img-placeholder {
-    background: linear-gradient(135deg, #1a0f0a, #2a1810);
+    background: linear-gradient(135deg, #1a0d06, #2a1810);
 }
 
-/* Badge en dark mode */
+/* ── Badges de categoría ── */
 body.dark-mode .badge {
-    background: rgba(20, 10, 5, 0.7);
-    border-color: rgba(58, 34, 24, 0.8);
-    color: var(--text-muted);
+    background: #1e1008;
+    border: 1px solid #4a2c18;
+    color: #A89880;
+}
+body.dark-mode .badge:hover,
+body.dark-mode .badge-active {
+    background: #8B4513;
+    border-color: #8B4513;
+    color: #fff;
+    box-shadow: 0 0 12px rgba(139,69,19,0.5);
+}
+body.dark-mode .categoria-badge {
+    background: rgba(212,168,67,0.85);
+    color: #1a0f0a;
 }
 
-/* Form control en dark mode */
+/* ── Formularios ── */
 body.dark-mode .form-control {
-    background: rgba(20, 10, 5, 0.8);
-    border-color: rgba(58, 34, 24, 0.8);
-    color: var(--text);
+    background: #150a04;
+    border: 1.5px solid #4a2c18;
+    color: #F5EDD8;
 }
-body.dark-mode .form-control::placeholder { color: var(--text-muted); }
+body.dark-mode .form-control::placeholder { color: #7a6458; }
 body.dark-mode .form-control:focus {
     border-color: #D4A843;
-    box-shadow: 0 0 0 3px rgba(212, 168, 67, 0.15);
+    background: #1e1008;
+    box-shadow: 0 0 0 3px rgba(212, 168, 67, 0.18), 0 0 14px rgba(212, 168, 67, 0.2);
 }
+body.dark-mode .form-group label { color: #c8b49a; }
+body.dark-mode .form-hint { color: #7a6458; }
 
-/* Franjas de horario en dark mode */
+/* ── Selección de horario – franjas ── */
 body.dark-mode .franja-item {
-    background: rgba(20, 10, 5, 0.7);
-    border-color: rgba(58, 34, 24, 0.8);
+    background: #1e1008;
+    border: 1.5px solid #4a2c18;
 }
 body.dark-mode .franja-disponible:hover {
-    background: rgba(46, 125, 50, 0.08);
+    background: rgba(46, 125, 50, 0.10);
     border-color: #66BB6A;
+    box-shadow: 0 4px 16px rgba(46,125,50,0.25), 0 0 12px rgba(46,125,50,0.2);
 }
 body.dark-mode .franja-seleccionada {
-    background: rgba(212, 168, 67, 0.08);
+    background: rgba(212, 168, 67, 0.10);
     border-color: #D4A843;
+    box-shadow: 0 0 0 3px rgba(212,168,67,0.2), 0 0 20px rgba(212,168,67,0.2);
 }
 body.dark-mode .franja-agotada {
-    background: rgba(10, 5, 2, 0.5);
+    background: rgba(8, 4, 1, 0.6);
+    border-color: #2a1810;
+    opacity: 0.45;
 }
+body.dark-mode .franja-fecha { color: #F5EDD8; }
+body.dark-mode .franja-hora  { color: #A89880; }
 
-/* Panel reserva en dark mode */
+/* ── Panel reserva lateral ── */
 body.dark-mode .form-reserva-panel {
-    background: rgba(20, 10, 5, 0.7);
-    border-color: rgba(212, 168, 67, 0.18);
+    background: #1e1008;
+    border: 1px solid #4a2c18;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+body.dark-mode .seleccion-resumen {
+    background: rgba(212,168,67,0.07);
+    border: 1px solid rgba(212,168,67,0.25);
+    color: #c8b49a;
 }
 
-/* Modal en dark mode */
-body.dark-mode .modal-box {
-    background: rgba(20, 10, 5, 0.92);
-    border-color: rgba(212, 168, 67, 0.2);
-}
-
-/* Stats strip ya tiene colores hardcodeados marrones — se ve bien en ambos modos */
-/* No necesita override */
-
-/* Sección de confirmación en dark mode */
-body.dark-mode .confirmacion-box {
-    background: rgba(20, 10, 5, 0.7);
-    border-color: rgba(212, 168, 67, 0.2);
-}
-body.dark-mode .confirmacion-detalle {
-    background: rgba(15, 8, 5, 0.8);
-    border-color: rgba(58, 34, 24, 0.8);
-}
-body.dark-mode .conf-row {
-    border-bottom-color: rgba(58, 34, 24, 0.8);
-}
-body.dark-mode .conf-row:hover { background: rgba(212, 168, 67, 0.05); }
-
-/* Reservas lista en dark mode */
+/* ── Mis Reservas – panel de cada reserva ── */
 body.dark-mode .reserva-card-panel {
-    background: rgba(20, 10, 5, 0.6);
-    border-color: rgba(58, 34, 24, 0.6);
+    background: #1e1008;
+    border: 1px solid #4a2c18;
+}
+body.dark-mode .reserva-card-panel:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 20px rgba(212,168,67,0.15);
+    border-color: rgba(212,168,67,0.35);
 }
 body.dark-mode .reserva-panel-header {
-    background: rgba(212, 168, 67, 0.06);
-    border-bottom-color: rgba(58, 34, 24, 0.6);
+    background: rgba(212,168,67,0.07);
+    border-bottom: 1px solid #4a2c18;
 }
 body.dark-mode .reserva-panel-footer {
-    border-top-color: rgba(58, 34, 24, 0.6);
+    border-top: 1px solid #4a2c18;
+}
+body.dark-mode .info-label  { color: #A89880; }
+body.dark-mode .info-valor  { color: #F5EDD8; }
+body.dark-mode .reserva-fecha-reg { color: #7a6458; }
+
+/* ── Confirmación de reserva ── */
+body.dark-mode .confirmacion-box {
+    background: #1e1008;
+    border: 1px solid #4a2c18;
+}
+body.dark-mode .confirmacion-detalle {
+    background: #150a04;
+    border: 1px solid #4a2c18;
+}
+body.dark-mode .conf-row { border-bottom: 1px solid #4a2c18; }
+body.dark-mode .conf-row:hover { background: rgba(212,168,67,0.05); }
+body.dark-mode .conf-row-highlight { background: rgba(212,168,67,0.07); }
+body.dark-mode .conf-label { color: #A89880; }
+body.dark-mode .conf-valor { color: #F5EDD8; }
+body.dark-mode .confirmacion-nota {
+    background: rgba(212,168,67,0.07);
+    border: 1px solid rgba(212,168,67,0.2);
+    color: #A89880;
 }
 
-/* Login box en dark mode */
+/* ── Login box admin ── */
 body.dark-mode .login-box {
-    background: rgba(20, 10, 5, 0.8);
-    border-color: rgba(212, 168, 67, 0.2);
+    background: #1e1008;
+    border: 1px solid #4a2c18;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.55), 0 0 30px rgba(212,168,67,0.08);
+}
+body.dark-mode .login-box h1 { color: #D4A843; }
+body.dark-mode .login-hint {
+    background: rgba(212,168,67,0.07);
+    border: 1px solid rgba(212,168,67,0.2);
+}
+body.dark-mode .login-hint code {
+    background: rgba(212,168,67,0.12);
+    color: #D4A843;
 }
 
-/* Admin items en dark mode */
+/* ── Franjas admin ── */
 body.dark-mode .franja-admin-item {
-    background: rgba(20, 10, 5, 0.6);
-    border-color: rgba(58, 34, 24, 0.6);
+    background: #1e1008;
+    border: 1px solid #4a2c18;
 }
+body.dark-mode .franja-admin-item:hover {
+    border-color: rgba(212,168,67,0.4);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+body.dark-mode .franja-admin-fecha { color: #F5EDD8; }
 
-/* Settings panel en dark mode */
+/* ── Modal edición ── */
+body.dark-mode .modal-overlay { background: rgba(0,0,0,0.75); }
+body.dark-mode .modal-box {
+    background: #1e1008;
+    border: 1px solid #4a2c18;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.7), 0 0 30px rgba(212,168,67,0.15);
+}
+body.dark-mode .modal-box h2 { color: #D4A843; }
+
+/* ── Settings panel ── */
+body.dark-mode .settings-modal { background: rgba(0,0,0,0.7); }
 body.dark-mode .settings-panel {
-    background: rgba(10, 5, 2, 0.95);
-    border-color: rgba(212, 168, 67, 0.2);
+    background: #1e1008;
+    border-left: 1px solid #4a2c18;
+    box-shadow: -8px 0 40px rgba(0,0,0,0.6);
 }
 body.dark-mode .settings-header {
-    background: rgba(212, 168, 67, 0.06);
-    border-bottom-color: rgba(212, 168, 67, 0.15);
+    background: rgba(212,168,67,0.07);
+    border-bottom: 1px solid #4a2c18;
 }
 body.dark-mode .settings-header h2,
 body.dark-mode .settings-header h3 { color: #D4A843; }
+body.dark-mode .settings-option > span { color: #c8b49a; }
+body.dark-mode .fs-btn {
+    background: #150a04;
+    border: 1px solid #4a2c18;
+    color: #A89880;
+}
+body.dark-mode .fs-btn:hover,
+body.dark-mode .fs-btn.active {
+    background: #8B4513;
+    border-color: #8B4513;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(139,69,19,0.5);
+}
 
-/* Fecha tabs en dark mode */
+/* ── Fecha tabs ── */
 body.dark-mode .fecha-tab {
-    background: rgba(20, 10, 5, 0.7);
-    border-color: rgba(58, 34, 24, 0.8);
-    color: var(--text-muted);
+    background: #1e1008;
+    border: 1px solid #4a2c18;
+    color: #A89880;
 }
 body.dark-mode .fecha-tab.active,
 body.dark-mode .fecha-tab:hover {
     background: #8B4513;
     border-color: #8B4513;
     color: #fff;
+    box-shadow: 0 0 10px rgba(139,69,19,0.4);
 }
 
-/* Btn secondary en dark mode */
+/* ── Botones secundarios ── */
 body.dark-mode .btn-secondary {
-    background: rgba(20, 10, 5, 0.7);
-    border-color: rgba(58, 34, 24, 0.8);
-    color: var(--text);
+    background: #1e1008;
+    border: 1px solid #4a2c18;
+    color: #c8b49a;
 }
 body.dark-mode .btn-secondary:hover {
     border-color: #D4A843;
-    background: rgba(212, 168, 67, 0.1);
+    background: rgba(212,168,67,0.08);
+    color: #D4A843;
 }
 
-/* Breadcrumb en dark mode */
-body.dark-mode .breadcrumb a { color: #D4A843; }
-body.dark-mode .breadcrumb { color: var(--text-muted); }
+/* ── Botón cancelar ── */
+body.dark-mode .btn-cancelar {
+    background: rgba(198, 40, 40, 0.15);
+    border: 1px solid rgba(198,40,40,0.4);
+    color: #FF8A80;
+}
+body.dark-mode .btn-cancelar:hover {
+    background: rgba(198, 40, 40, 0.25);
+    box-shadow: 0 0 14px rgba(198,40,40,0.3);
+}
 
-/* Empty state en dark mode */
-body.dark-mode .empty-state { color: var(--text-muted); }
+/* ── Breadcrumb ── */
+body.dark-mode .breadcrumb { color: #7a6458; }
+body.dark-mode .breadcrumb a { color: #D4A843; }
+body.dark-mode .breadcrumb a:hover { color: #E8C05A; }
+
+/* ── Empty state ── */
+body.dark-mode .empty-state h3 { color: #c8b49a; }
+body.dark-mode .empty-state p  { color: #7a6458; }
+
+/* ── Feature cards (siempre oscuro, ya cubierto por sección,
+      pero reforzamos para que no cambien en dark mode) ── */
+body.dark-mode .features { background: linear-gradient(135deg, #1a0a04 0%, #2a1206 100%); }
+
+/* ── Tipos de badge ── */
+body.dark-mode .tipo-permanente { background: rgba(21,101,192,0.2); color: #90CAF9; }
+body.dark-mode .tipo-temporal   { background: rgba(230,81,0,0.2);   color: #FFCC80; }
+body.dark-mode .badge-active    {
+    background: rgba(46,125,50,0.2);
+    color: #A5D6A7;
+    border-color: rgba(46,125,50,0.4);
+    box-shadow: 0 0 8px rgba(46,125,50,0.25);
+}
+
+/* ── Page header ── */
+body.dark-mode .page-header h1 { color: #D4A843; }
+body.dark-mode .page-header p  { color: #A89880; }
+
+/* ── Auth container en dark mode (contraste entre formulario y fondo) ── */
+body.dark-mode .auth-container {
+    background: #1e1008 !important;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.7), 0 0 40px rgba(212,168,67,0.08) !important;
+    border: 1px solid #4a2c18;
+}
+body.dark-mode .form-container form {
+    background: #1e1008 !important;
+}
+/* Borde visible entre el formulario y el área exterior */
+body.dark-mode .sign-in,
+body.dark-mode .sign-up {
+    border-right: 1px solid #4a2c18;
+}
+
+/* Inputs del auth en dark mode */
+body.dark-mode .auth-input {
+    background: #150a04 !important;
+    border-color: #4a2c18 !important;
+    color: #F5EDD8 !important;
+}
+body.dark-mode .auth-input:focus {
+    background: #1e1008 !important;
+    border-color: #D4A843 !important;
+    box-shadow: 0 0 0 3px rgba(212,168,67,0.18) !important;
+}

@@ -9,7 +9,7 @@
     <nav class="breadcrumb">
         <a href="${pageContext.request.contextPath}/">Inicio</a>
         <span>›</span>
-        <a href="${pageContext.request.contextPath}/reservas/mis-reservas?email=${email}">
+        <a href="${pageContext.request.contextPath}/reservas/mis-reservas">
             Mis Reservas
         </a>
         <span>›</span>
@@ -130,7 +130,7 @@
                 </button>
             </form>
 
-            <a href="${pageContext.request.contextPath}/reservas/mis-reservas?email=${email}"
+            <a href="${pageContext.request.contextPath}/reservas/mis-reservas"
                class="btn btn-secondary btn-full" style="margin-top:0.75rem;">
                 ← Volver a mis reservas
             </a>

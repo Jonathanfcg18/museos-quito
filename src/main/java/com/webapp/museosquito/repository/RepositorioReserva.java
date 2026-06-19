@@ -72,6 +72,27 @@ public class RepositorioReserva {
         }
     }
 
+    /**
+     * Lista TODAS las reservas (activas y canceladas) de un visitante.
+     * Usada por HU-07 y HU-09 para mostrar y filtrar por estado en el cliente.
+     */
+    public List<Reserva> listarTodasPorEmail(String email) {
+        try (Session s = sf().openSession()) {
+            List<Reserva> lista = s.createQuery(
+                    "FROM Reserva r WHERE r.emailVisitante = :email " +
+                            "ORDER BY r.fechaRegistro DESC",
+                    Reserva.class
+            ).setParameter("email", email).list();
+            for (Reserva r : lista) {
+                r.getFranja().getMuseo().getNombre();
+                r.getFranja().getFecha();
+            }
+            return lista;
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
+    }
+
     public Reserva buscarPorCodigo(String codigo) {
         try (Session s = sf().openSession()) {
             Reserva r = s.createQuery(

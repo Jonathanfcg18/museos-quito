@@ -103,6 +103,16 @@ public class ServicioReserva {
     }
 
     /**
+     * GET /reservas/mis-reservas — lista TODAS las reservas (activas y canceladas)
+     * de un visitante por email. Usado por HU-07 y HU-09.
+     */
+    public List<Reserva> obtenerTodasReservasPorEmail(String email) {
+        if (email == null || email.isBlank())
+            return Collections.emptyList();
+        return repoReserva.listarTodasPorEmail(email.trim().toLowerCase());
+    }
+
+    /**
      * DELETE /reservas/{id} — cancela una reserva y libera el cupo.
      * HU3 Escenario 1: cancelación exitosa.
      *

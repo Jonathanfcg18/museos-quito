@@ -3,11 +3,13 @@ package com.webapp.museosquito.controller.visitante;
 import com.webapp.museosquito.controller.ControladorBase;
 import com.webapp.museosquito.model.FranjaReserva;
 import com.webapp.museosquito.model.Reserva;
+import com.webapp.museosquito.model.Usuario;
 import com.webapp.museosquito.service.ServicioReserva;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -15,7 +17,7 @@ import java.util.List;
 
 /**
  * Controlador para modificar una reserva.
- * HU3 Escenario 2: PUT /reservas/{id}
+ * Actualizado para HU-07: toma el email desde la sesión activa.
  */
 @WebServlet(name = "ControladorModificarReserva", urlPatterns = "/reservas/modificar")
 public class ControladorModificarReserva extends ControladorBase {
@@ -27,16 +29,22 @@ public class ControladorModificarReserva extends ControladorBase {
         servicioReserva = new ServicioReserva();
     }
 
-    // GET: muestra formulario de selección de nuevo horario
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
         setEncoding(req, res);
 
-        String reservaIdParam = req.getParameter("reservaId");
-        String email          = req.getParameter("email");
+        HttpSession session = req.getSession(false);
+        Usuario usuario = (session != null)
+                ? (Usuario) session.getAttribute("usuarioSesion") : null;
 
-        if (reservaIdParam == null || email == null || email.isBlank()) {
+        if (usuario == null) {
+            redirigir("/login", req, res);
+            return;
+        }
+
+        String reservaIdParam = req.getParameter("reservaId");
+        if (reservaIdParam == null) {
             redirigir("/reservas/mis-reservas", req, res);
             return;
         }
@@ -49,34 +57,42 @@ public class ControladorModificarReserva extends ControladorBase {
             return;
         }
 
+        String email = usuario.getEmail();
         Reserva reserva = servicioReserva.obtenerReservaPorId(reservaId);
-        if (reserva == null || !reserva.getEmailVisitante().equalsIgnoreCase(email.trim())) {
-            redirigir("/reservas/mis-reservas?email=" +
-                URLEncoder.encode(email, "UTF-8"), req, res);
+
+        if (reserva == null ||
+                !reserva.getEmailVisitante().equalsIgnoreCase(email)) {
+            redirigir("/reservas/mis-reservas", req, res);
             return;
         }
 
-        // Franjas disponibles del mismo museo para seleccionar
         List<FranjaReserva> franjas = servicioReserva
-            .obtenerFranjasPorMuseo(reserva.getFranja().getMuseo().getId());
+                .obtenerFranjasPorMuseo(reserva.getFranja().getMuseo().getId());
 
         req.setAttribute("reserva", reserva);
         req.setAttribute("franjas", franjas);
-        req.setAttribute("email", email);
+        req.setAttribute("email",   email);
         irAVista("visitante/modificarReserva.jsp", req, res);
     }
 
-    // POST: confirma el cambio de horario
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
         setEncoding(req, res);
 
-        String reservaIdParam  = req.getParameter("reservaId");
-        String nuevaFranjaParam = req.getParameter("nuevaFranjaId");
-        String email            = req.getParameter("email");
+        HttpSession session = req.getSession(false);
+        Usuario usuario = (session != null)
+                ? (Usuario) session.getAttribute("usuarioSesion") : null;
 
-        if (reservaIdParam == null || nuevaFranjaParam == null || email == null) {
+        if (usuario == null) {
+            redirigir("/login", req, res);
+            return;
+        }
+
+        String reservaIdParam   = req.getParameter("reservaId");
+        String nuevaFranjaParam = req.getParameter("nuevaFranjaId");
+
+        if (reservaIdParam == null || nuevaFranjaParam == null) {
             redirigir("/reservas/mis-reservas", req, res);
             return;
         }
@@ -91,21 +107,16 @@ public class ControladorModificarReserva extends ControladorBase {
         }
 
         try {
-            // HU3 Escenario 2: modificar reserva liberando cupo original
-            servicioReserva.modificarReserva(reservaId, email, nuevaFranjaId);
-
+            servicioReserva.modificarReserva(reservaId, usuario.getEmail(), nuevaFranjaId);
             String msg = URLEncoder.encode(
-                "Reserva modificada exitosamente. El cupo del horario original fue liberado.",
-                "UTF-8");
+                    "Reserva modificada exitosamente. El cupo del horario original fue liberado.",
+                    "UTF-8");
             res.sendRedirect(req.getContextPath() +
-                "/reservas/mis-reservas?email=" +
-                URLEncoder.encode(email, "UTF-8") + "&mensaje=" + msg);
-
+                    "/reservas/mis-reservas?mensaje=" + msg);
         } catch (Exception e) {
             String err = URLEncoder.encode(e.getMessage(), "UTF-8");
             res.sendRedirect(req.getContextPath() +
-                "/reservas/modificar?reservaId=" + reservaId +
-                "&email=" + URLEncoder.encode(email, "UTF-8") + "&error=" + err);
+                    "/reservas/modificar?reservaId=" + reservaId + "&error=" + err);
         }
     }
 }

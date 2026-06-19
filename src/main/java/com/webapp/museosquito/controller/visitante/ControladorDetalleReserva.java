@@ -1,6 +1,7 @@
 package com.webapp.museosquito.controller.visitante;
 
 import com.webapp.museosquito.controller.ControladorBase;
+import com.webapp.museosquito.model.Reserva;
 import com.webapp.museosquito.model.Usuario;
 import com.webapp.museosquito.service.ServicioReserva;
 import jakarta.servlet.ServletException;
@@ -10,14 +11,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 
 /**
- * Controlador para cancelar una reserva.
- * Actualizado para HU-07: toma el email desde la sesión activa.
+ * HU-08: Ver el detalle completo de una reserva.
+ * GET /reservas/detalle?id={id}
+ * Valida que la reserva pertenezca al visitante en sesión.
  */
-@WebServlet(name = "ControladorCancelarReserva", urlPatterns = "/reservas/cancelar")
-public class ControladorCancelarReserva extends ControladorBase {
+@WebServlet(name = "ControladorDetalleReserva", urlPatterns = "/reservas/detalle")
+public class ControladorDetalleReserva extends ControladorBase {
 
     private ServicioReserva servicioReserva;
 
@@ -27,7 +28,7 @@ public class ControladorCancelarReserva extends ControladorBase {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse res)
+    protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
         setEncoding(req, res);
 
@@ -40,28 +41,32 @@ public class ControladorCancelarReserva extends ControladorBase {
             return;
         }
 
-        String reservaIdParam = req.getParameter("reservaId");
-        if (reservaIdParam == null) {
+        String idParam = req.getParameter("id");
+        if (idParam == null || idParam.isBlank()) {
             redirigir("/reservas/mis-reservas", req, res);
             return;
         }
 
         int reservaId;
         try {
-            reservaId = Integer.parseInt(reservaIdParam.trim());
+            reservaId = Integer.parseInt(idParam.trim());
         } catch (NumberFormatException e) {
             redirigir("/reservas/mis-reservas", req, res);
             return;
         }
 
-        try {
-            servicioReserva.cancelarReserva(reservaId, usuario.getEmail());
-            String msg = URLEncoder.encode(
-                    "Reserva cancelada exitosamente. El cupo fue liberado.", "UTF-8");
-            res.sendRedirect(req.getContextPath() + "/reservas/mis-reservas?mensaje=" + msg);
-        } catch (Exception e) {
-            String err = URLEncoder.encode(e.getMessage(), "UTF-8");
-            res.sendRedirect(req.getContextPath() + "/reservas/mis-reservas?error=" + err);
+        Reserva reserva = servicioReserva.obtenerReservaPorId(reservaId);
+
+        // HU-08 Escenario 2: reserva no existe o no pertenece al visitante en sesión
+        if (reserva == null ||
+                !reserva.getEmailVisitante().equalsIgnoreCase(usuario.getEmail())) {
+            req.setAttribute("error", "La reserva solicitada no fue encontrada.");
+            irAVista("visitante/misReservas.jsp", req, res);
+            return;
         }
+
+        req.setAttribute("reserva", reserva);
+        req.setAttribute("usuario", usuario);
+        irAVista("visitante/detalleReserva.jsp", req, res);
     }
 }

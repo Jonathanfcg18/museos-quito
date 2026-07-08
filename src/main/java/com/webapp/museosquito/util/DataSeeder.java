@@ -19,11 +19,11 @@ import java.time.format.DateTimeFormatter;
  * Pobla la base de datos con museos reales de Quito, Ecuador.
  * Datos basados en información pública de la Fundación Museos de la Ciudad
  * y el Sistema de Museos y Espacios Culturales de Quito (SMQ).
- *
+ * <p>
  * Sprint 2 – Se agregan usuarios del sistema para HU-01 y HU-02:
- *   - Visitante de prueba (rol VISITANTE)
- *   - Admin de museo en tabla usuarios (rol ADMIN_MUSEO, para login unificado)
- *
+ * - Visitante de prueba (rol VISITANTE)
+ * - Admin de museo en tabla usuarios (rol ADMIN_MUSEO, para login unificado)
+ * <p>
  * Responsable Sprint 2: Jonathan Cuasapaz
  */
 public class DataSeeder {
@@ -165,13 +165,21 @@ public class DataSeeder {
 
             // ── Franjas de reserva para HU2 del Sprint 1 ─────────────────────────
             RepositorioFranjaReserva repoFranja = new RepositorioFranjaReserva();
-            String[] fechas = {
-                    "2026-06-02", "2026-06-03", "2026-06-04",
-                    "2026-06-05", "2026-06-06", "2026-06-09", "2026-06-10"
-            };
+            // ── POR este bloque dinámico (HAL-03/04): ──
+            // Genera fechas desde hoy hasta 30 días adelante, excluyendo lunes
+            java.time.LocalDate hoy = java.time.LocalDate.now();
+            java.util.List<String> listaFechas = new java.util.ArrayList<>();
+            for (int d = 0; d < 30; d++) {
+                java.time.LocalDate fecha = hoy.plusDays(d);
+                // Excluir lunes (día de cierre común en museos)
+                if (fecha.getDayOfWeek() != java.time.DayOfWeek.MONDAY) {
+                    listaFechas.add(fecha.toString());
+                }
+            }
+            String[] fechas = listaFechas.toArray(new String[0]);
             String[][] turnos = {
-                    { "09:00", "10:00" }, { "10:00", "11:00" }, { "11:00", "12:00" },
-                    { "14:00", "15:00" }, { "15:00", "16:00" }, { "16:00", "17:00" }
+                    {"09:00", "10:00"}, {"10:00", "11:00"}, {"11:00", "12:00"},
+                    {"14:00", "15:00"}, {"15:00", "16:00"}, {"16:00", "17:00"}
             };
             Museo[] todosMuseos = {
                     museoNacional, capillaHombre, alabado, yaku,
@@ -296,7 +304,7 @@ public class DataSeeder {
     }
 
     private void agregarHorario(Museo museo, String dia, String apertura,
-            String cierre, boolean cerrado) {
+                                String cierre, boolean cerrado) {
         Session s = HibernateUtil.getSessionFactory().openSession();
         try {
             s.beginTransaction();
@@ -309,7 +317,7 @@ public class DataSeeder {
     }
 
     private void agregarExposicion(Museo museo, String titulo, String descripcion,
-            String tipo, String inicio, String fin) {
+                                   String tipo, String inicio, String fin) {
         Session s = HibernateUtil.getSessionFactory().openSession();
         try {
             s.beginTransaction();

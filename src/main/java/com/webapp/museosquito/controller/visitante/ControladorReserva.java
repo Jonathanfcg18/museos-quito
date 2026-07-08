@@ -9,6 +9,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import com.webapp.museosquito.model.FranjaReserva;
+import jakarta.servlet.http.HttpSession;
+
 import java.io.IOException;
 
 /**
@@ -32,15 +34,22 @@ public class ControladorReserva extends ControladorBase {
             throws ServletException, IOException {
         setEncoding(req, res);
 
-        String franjaIdParam    = req.getParameter("franjaId");
-        String nombre           = req.getParameter("nombre");
-        String email            = req.getParameter("email");
-        String cantidadParam    = req.getParameter("cantidad");
-        String museoIdParam     = req.getParameter("museoId");
+        // HAL-08: obtener email siempre desde la sesión, ignorar el campo del formulario
+        HttpSession session = req.getSession(false);
+        com.webapp.museosquito.model.Usuario usuario = (session != null)
+                ? (com.webapp.museosquito.model.Usuario) session.getAttribute("usuarioSesion")
+                : null;
 
-        // Validar que todos los campos llegaron
+        String franjaIdParam = req.getParameter("franjaId");
+        String nombre        = req.getParameter("nombre");
+        String cantidadParam = req.getParameter("cantidad");
+        String museoIdParam  = req.getParameter("museoId");
+
+        // HAL-08: email siempre de la sesión
+        String email = (usuario != null) ? usuario.getEmail() : req.getParameter("email");
+
         if (franjaIdParam == null || nombre == null ||
-            email == null || cantidadParam == null) {
+                email == null || cantidadParam == null) {
             req.setAttribute("error", "Todos los campos son obligatorios.");
             redirigir("/museos", req, res);
             return;
@@ -57,26 +66,24 @@ public class ControladorReserva extends ControladorBase {
         }
 
         try {
-        Reserva reserva = servicioReserva.crearReserva(
-                franjaId, nombre, email, cantidad);
+            Reserva reserva = servicioReserva.crearReserva(
+                    franjaId, nombre, email, cantidad);
 
-        // Recargar la franja con su museo para que el JSP pueda acceder a reserva.franja.museo
-        FranjaReserva franja = servicioReserva.obtenerFranjaPorId(franjaId);
-        reserva.setFranja(franja);
+            FranjaReserva franja = servicioReserva.obtenerFranjaPorId(franjaId);
+            reserva.setFranja(franja);
 
             req.setAttribute("reserva", reserva);
             irAVista("visitante/confirmacionReserva.jsp", req, res);
 
         } catch (IllegalStateException e) {
-            // Escenario 2: sin cupos → regresar a selección con mensaje de error
             res.sendRedirect(req.getContextPath() +
-                "/museos/horarios?museoId=" + museoId +
-                "&error=" + java.net.URLEncoder.encode(e.getMessage(), "UTF-8"));
+                    "/museos/horarios?museoId=" + museoId +
+                    "&error=" + java.net.URLEncoder.encode(e.getMessage(), "UTF-8"));
 
         } catch (IllegalArgumentException e) {
             res.sendRedirect(req.getContextPath() +
-                "/museos/horarios?museoId=" + museoId +
-                "&error=" + java.net.URLEncoder.encode(e.getMessage(), "UTF-8"));
+                    "/museos/horarios?museoId=" + museoId +
+                    "&error=" + java.net.URLEncoder.encode(e.getMessage(), "UTF-8"));
         }
     }
 }

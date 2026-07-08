@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%@ taglib uri="jakarta.tags.fmt" prefix="fmt" %>
-<c:set var="pageTitle"   value="Detalle de Reserva – Portal de Cultura Quito"/>
+<c:set var="pageTitle" value="Detalle de Reserva – Portal de Cultura Quito"/>
 <c:set var="currentPage" value="misreservas"/>
 <%@ include file="/WEB-INF/includes/header.jsp" %>
 
@@ -81,21 +81,23 @@
                 <span class="conf-valor">${reserva.cantidadPersonas}</span>
             </div>
 
+            <%-- HAL-07: Precio siempre con dos decimales usando fmt:formatNumber --%>
             <div class="conf-row">
                 <span class="conf-label">💰 Precio total</span>
                 <span class="conf-valor">
-          <c:choose>
-              <c:when test="${reserva.franja.museo.precioAdulto == 0}">
-                  Entrada gratuita
-              </c:when>
-              <c:otherwise>
-                  $<fmt:formatNumber
-                      value="${reserva.franja.museo.precioAdulto * reserva.cantidadPersonas}"
-                      pattern="#,##0.00"/>
-              </c:otherwise>
-          </c:choose>
-        </span>
+                <c:choose>
+                    <c:when test="${reserva.franja.museo.precioAdulto == 0}">
+                        Entrada gratuita
+                    </c:when>
+                    <c:otherwise>
+                        $<fmt:formatNumber
+                            value="${reserva.franja.museo.precioAdulto * reserva.cantidadPersonas}"
+                            pattern="#,##0.00"/>
+                    </c:otherwise>
+                </c:choose>
+              </span>
             </div>
+
 
             <div class="conf-row conf-row-highlight">
                 <span class="conf-label">🎫 Código de confirmación</span>

@@ -67,7 +67,7 @@ public class ServicioReserva {
      * @throws IllegalArgumentException si los datos son inválidos
      */
     public Reserva crearReserva(int franjaId, String nombre, String email,
-                                int cantidad) {
+            int cantidad) {
         // Validaciones de datos
         if (nombre == null || nombre.isBlank())
             throw new IllegalArgumentException("El nombre del visitante es obligatorio.");
@@ -81,14 +81,7 @@ public class ServicioReserva {
         if (franja == null)
             throw new IllegalArgumentException("El horario seleccionado no existe.");
 
-        // HAL-01: Impedir reservas en fechas pasadas
-        LocalDate fechaFranja = LocalDate.parse(franja.getFecha());
-        if (fechaFranja.isBefore(LocalDate.now()))
-            throw new IllegalArgumentException(
-                    "No es posible reservar en una fecha que ya pasó (" +
-                            franja.getFecha() + "). Por favor selecciona una fecha futura.");
-
-        // Escenario 2 HU2: validación de aforo
+        // Escenario 2 HU2: validación de aforo — sistema bloquea cuando no hay cupos
         if (!franja.hayCupos())
             throw new IllegalStateException(
                     "El horario seleccionado ya no tiene cupos disponibles. " +
@@ -111,15 +104,18 @@ public class ServicioReserva {
         Reserva reservaGuardada = repoReserva.guardar(reserva);
 
         // HU-10 Escenario 1 y 3: el correo se envía solo si la reserva quedó
-        // registrada; un fallo de envío se registra en el log pero no afecta
-        // la reserva ya persistida ni se muestra como error al visitante.
+        // registrada. El envío real ocurre en segundo plano (ver CorreoService),
+        // así que este try-catch solo captura errores de configuración/validación
+        // inmediatos; un fallo del SMTP en sí se registra en el log desde el
+        // propio hilo en segundo plano y nunca afecta esta respuesta.
         try {
             correoService.enviarConfirmacionReserva(reservaGuardada);
-            LOGGER.info("Correo de confirmación enviado a " + reservaGuardada.getEmailVisitante()
-                    + " para la reserva " + reservaGuardada.getCodigoConfirmacion());
+            LOGGER.info("Envío de correo de confirmación encolado para "
+                    + reservaGuardada.getEmailVisitante() + " (reserva "
+                    + reservaGuardada.getCodigoConfirmacion() + ")");
         } catch (Exception e) {
             LOGGER.log(Level.WARNING,
-                    "Error al enviar el correo de confirmación para la reserva "
+                    "No se pudo encolar el correo de confirmación para la reserva "
                             + reservaGuardada.getCodigoConfirmacion() + ": " + e.getMessage(),
                     e);
         }
@@ -180,15 +176,15 @@ public class ServicioReserva {
         Reserva reservaCancelada = repoReserva.actualizar(reserva);
 
         // HU-11 Escenario 1: el correo se envía solo si la cancelación quedó
-        // registrada; un fallo de envío se registra en el log y no afecta
-        // el flujo de cancelación ya completado.
+        // registrada. El envío real ocurre en segundo plano (ver CorreoService).
         try {
             correoService.enviarCancelacionReserva(reservaCancelada);
-            LOGGER.info("Correo de cancelación enviado a " + reservaCancelada.getEmailVisitante()
-                    + " para la reserva " + reservaCancelada.getCodigoConfirmacion());
+            LOGGER.info("Envío de correo de cancelación encolado para "
+                    + reservaCancelada.getEmailVisitante() + " (reserva "
+                    + reservaCancelada.getCodigoConfirmacion() + ")");
         } catch (Exception e) {
             LOGGER.log(Level.WARNING,
-                    "Error al enviar el correo de cancelación para la reserva "
+                    "No se pudo encolar el correo de cancelación para la reserva "
                             + reservaCancelada.getCodigoConfirmacion() + ": " + e.getMessage(),
                     e);
         }
@@ -212,20 +208,12 @@ public class ServicioReserva {
             throw new IllegalStateException("No puedes modificar una reserva cancelada.");
 
         FranjaReserva franjaOriginal = repoFranja.buscarPorId(reserva.getFranja().getId());
-        FranjaReserva franjaNueva   = repoFranja.buscarPorId(nuevaFranjaId);
+        FranjaReserva franjaNueva = repoFranja.buscarPorId(nuevaFranjaId);
 
         if (franjaNueva == null)
             throw new IllegalArgumentException("El nuevo horario seleccionado no existe.");
         if (franjaOriginal.getId() == franjaNueva.getId())
             throw new IllegalArgumentException("El nuevo horario debe ser diferente al actual.");
-
-        // HAL-02: Impedir modificar a una fecha pasada
-        LocalDate fechaNueva = LocalDate.parse(franjaNueva.getFecha());
-        if (fechaNueva.isBefore(LocalDate.now()))
-            throw new IllegalArgumentException(
-                    "No es posible modificar la reserva a una fecha que ya pasó (" +
-                            franjaNueva.getFecha() + "). Por favor selecciona una fecha futura.");
-
         if (!franjaNueva.hayCupos())
             throw new IllegalStateException(
                     "El horario seleccionado ya no tiene cupos disponibles. Elige otra opción.");
@@ -244,6 +232,7 @@ public class ServicioReserva {
         franjaNueva.setAforoOcupado(franjaNueva.getAforoOcupado() + reserva.getCantidadPersonas());
         repoFranja.actualizar(franjaNueva);
 
+        // Actualizar la reserva con la nueva franja
         reserva.setFranja(franjaNueva);
         return repoReserva.actualizar(reserva);
     }

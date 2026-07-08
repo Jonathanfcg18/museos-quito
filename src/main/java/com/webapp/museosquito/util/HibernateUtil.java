@@ -53,12 +53,22 @@ public class HibernateUtil {
         if (password != null)
             cfg.setProperty(Environment.PASS, password);
 
-        // Ajustar dialecto según la base de datos
+// Ajustar dialecto y driver según la base de datos
+        String driverClass;
         if (jdbcUrl.contains("postgresql")) {
+            driverClass = "org.postgresql.Driver";
             cfg.setProperty(Environment.DIALECT, "org.hibernate.dialect.PostgreSQLDialect");
         } else {
+            driverClass = "org.sqlite.JDBC";
             cfg.setProperty(Environment.DIALECT, "org.hibernate.community.dialect.SQLiteDialect");
         }
+
+        try {
+            Class.forName(driverClass); // fuerza la carga y expone el error real si falla
+        } catch (Throwable t) {
+            throw new RuntimeException("No se pudo cargar el driver JDBC " + driverClass, t);
+        }
+        cfg.setProperty(Environment.DRIVER, driverClass);
 
         sessionFactory = cfg.buildSessionFactory();
     }

@@ -109,4 +109,18 @@ public class Reserva {
 
     public boolean isActiva()              { return activa; }
     public void setActiva(boolean activa)  { this.activa = activa; }
+    /**
+     * HAL-05: Indica si la fecha de visita ya transcurrió.
+     * Una reserva es "pasada" si su fecha es anterior a hoy,
+     * independientemente de si está activa o cancelada.
+     */
+    public boolean isPasada() {
+        try {
+            java.time.LocalDate fechaVisita =
+                    java.time.LocalDate.parse(this.franja.getFecha());
+            return fechaVisita.isBefore(java.time.LocalDate.now());
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

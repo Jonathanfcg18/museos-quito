@@ -67,7 +67,7 @@ public class ServicioReserva {
      * @throws IllegalArgumentException si los datos son inválidos
      */
     public Reserva crearReserva(int franjaId, String nombre, String email,
-            int cantidad) {
+                                int cantidad) {
         // Validaciones de datos
         if (nombre == null || nombre.isBlank())
             throw new IllegalArgumentException("El nombre del visitante es obligatorio.");
@@ -81,7 +81,14 @@ public class ServicioReserva {
         if (franja == null)
             throw new IllegalArgumentException("El horario seleccionado no existe.");
 
-        // Escenario 2 HU2: validación de aforo — sistema bloquea cuando no hay cupos
+        // HAL-01: Impedir reservas en fechas pasadas
+        LocalDate fechaFranja = LocalDate.parse(franja.getFecha());
+        if (fechaFranja.isBefore(LocalDate.now()))
+            throw new IllegalArgumentException(
+                    "No es posible reservar en una fecha que ya pasó (" +
+                            franja.getFecha() + "). Por favor selecciona una fecha futura.");
+
+        // Escenario 2 HU2: validación de aforo
         if (!franja.hayCupos())
             throw new IllegalStateException(
                     "El horario seleccionado ya no tiene cupos disponibles. " +
@@ -205,12 +212,20 @@ public class ServicioReserva {
             throw new IllegalStateException("No puedes modificar una reserva cancelada.");
 
         FranjaReserva franjaOriginal = repoFranja.buscarPorId(reserva.getFranja().getId());
-        FranjaReserva franjaNueva = repoFranja.buscarPorId(nuevaFranjaId);
+        FranjaReserva franjaNueva   = repoFranja.buscarPorId(nuevaFranjaId);
 
         if (franjaNueva == null)
             throw new IllegalArgumentException("El nuevo horario seleccionado no existe.");
         if (franjaOriginal.getId() == franjaNueva.getId())
             throw new IllegalArgumentException("El nuevo horario debe ser diferente al actual.");
+
+        // HAL-02: Impedir modificar a una fecha pasada
+        LocalDate fechaNueva = LocalDate.parse(franjaNueva.getFecha());
+        if (fechaNueva.isBefore(LocalDate.now()))
+            throw new IllegalArgumentException(
+                    "No es posible modificar la reserva a una fecha que ya pasó (" +
+                            franjaNueva.getFecha() + "). Por favor selecciona una fecha futura.");
+
         if (!franjaNueva.hayCupos())
             throw new IllegalStateException(
                     "El horario seleccionado ya no tiene cupos disponibles. Elige otra opción.");
@@ -229,7 +244,6 @@ public class ServicioReserva {
         franjaNueva.setAforoOcupado(franjaNueva.getAforoOcupado() + reserva.getCantidadPersonas());
         repoFranja.actualizar(franjaNueva);
 
-        // Actualizar la reserva con la nueva franja
         reserva.setFranja(franjaNueva);
         return repoReserva.actualizar(reserva);
     }

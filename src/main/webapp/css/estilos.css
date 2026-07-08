@@ -944,7 +944,10 @@ body.dark-mode .navbar {
     color: #fff;
     font-size: 1rem;
 }
-.footer-sub { opacity: 0.55; font-size: 0.78rem; }
+/* Corrección contraste: opacity 0.55 sobre un color ya semitransparente
+   (rgba(255,255,255,0.85)) resultaba en contraste muy bajo (~2.8:1).
+   Se usa un color sólido con contraste suficiente (>4.5:1). */
+.footer-sub { color: rgba(255,255,255,0.75); font-size: 0.78rem; }
 
 /* ============================================================
    HU2: SELECCIÓN DE HORARIO
@@ -1012,6 +1015,25 @@ body.dark-mode .navbar {
     transition: all var(--transition);
     position: relative;
     overflow: hidden;
+}
+/* HAL: .franja-item ahora se renderiza como <button> para que sea operable
+   por teclado de forma nativa (sin depender solo de onclick). Se resetean
+   los estilos por defecto del botón para que se vea igual que antes. */
+button.franja-item {
+    width: 100%;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    appearance: none;
+    -webkit-appearance: none;
+}
+button.franja-item:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+}
+button.franja-item:disabled,
+button.franja-item[aria-disabled="true"] {
+    cursor: not-allowed;
 }
 
 .franja-disponible { cursor: pointer; }

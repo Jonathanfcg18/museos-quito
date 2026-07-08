@@ -26,6 +26,7 @@ class ServicioReservaTest {
 
     @Mock private RepositorioFranjaReserva repoFranja;
     @Mock private RepositorioReserva       repoReserva;
+    @Mock private CorreoService            correoService;
 
     private ServicioReserva servicio;
     private FranjaReserva   franjaConCupos;
@@ -33,7 +34,9 @@ class ServicioReservaTest {
 
     @BeforeEach
     void setUp() {
-        servicio = new ServicioReserva(repoFranja, repoReserva);
+        // Se inyecta un CorreoService mockeado para no depender de un
+        // servidor SMTP real durante las pruebas unitarias (HU-10 / HU-11).
+        servicio = new ServicioReserva(repoFranja, repoReserva, correoService);
 
         Museo museo = new Museo();
 

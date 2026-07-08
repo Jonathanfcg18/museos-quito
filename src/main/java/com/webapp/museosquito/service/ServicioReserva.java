@@ -9,26 +9,42 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Lógica de negocio para reservas.
  * HU2: Reservar una visita.
+ * HU-10: Envío de correo de confirmación tras reserva exitosa.
+ * HU-11: Envío de correo de cancelación tras cancelar una reserva.
  */
 public class ServicioReserva {
 
+    private static final Logger LOGGER = Logger.getLogger(ServicioReserva.class.getName());
+
     private final RepositorioFranjaReserva repoFranja;
     private final RepositorioReserva repoReserva;
+    private final CorreoService correoService;
 
     public ServicioReserva() {
         this.repoFranja = new RepositorioFranjaReserva();
         this.repoReserva = new RepositorioReserva();
+        this.correoService = new CorreoService();
     }
 
-    // Constructor para tests con inyección
+    // Constructor para tests con inyección (usa CorreoService real por defecto)
     public ServicioReserva(RepositorioFranjaReserva repoFranja,
             RepositorioReserva repoReserva) {
+        this(repoFranja, repoReserva, new CorreoService());
+    }
+
+    // Constructor para tests con inyección completa (permite mockear CorreoService
+    // y así no depender de un servidor SMTP real durante las pruebas — HU-10 / HU-11)
+    public ServicioReserva(RepositorioFranjaReserva repoFranja,
+            RepositorioReserva repoReserva, CorreoService correoService) {
         this.repoFranja = repoFranja;
         this.repoReserva = repoReserva;
+        this.correoService = correoService;
     }
 
     /**
@@ -85,7 +101,23 @@ public class ServicioReserva {
                 franja, nombre.trim(), email.trim().toLowerCase(),
                 cantidad, LocalDate.now().toString(), codigo);
 
-        return repoReserva.guardar(reserva);
+        Reserva reservaGuardada = repoReserva.guardar(reserva);
+
+        // HU-10 Escenario 1 y 3: el correo se envía solo si la reserva quedó
+        // registrada; un fallo de envío se registra en el log pero no afecta
+        // la reserva ya persistida ni se muestra como error al visitante.
+        try {
+            correoService.enviarConfirmacionReserva(reservaGuardada);
+            LOGGER.info("Correo de confirmación enviado a " + reservaGuardada.getEmailVisitante()
+                    + " para la reserva " + reservaGuardada.getCodigoConfirmacion());
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING,
+                    "Error al enviar el correo de confirmación para la reserva "
+                            + reservaGuardada.getCodigoConfirmacion() + ": " + e.getMessage(),
+                    e);
+        }
+
+        return reservaGuardada;
     }
 
     public FranjaReserva obtenerFranjaPorId(int id) {
@@ -138,7 +170,21 @@ public class ServicioReserva {
 
         // Marcar como cancelada
         reserva.setActiva(false);
-        repoReserva.actualizar(reserva);
+        Reserva reservaCancelada = repoReserva.actualizar(reserva);
+
+        // HU-11 Escenario 1: el correo se envía solo si la cancelación quedó
+        // registrada; un fallo de envío se registra en el log y no afecta
+        // el flujo de cancelación ya completado.
+        try {
+            correoService.enviarCancelacionReserva(reservaCancelada);
+            LOGGER.info("Correo de cancelación enviado a " + reservaCancelada.getEmailVisitante()
+                    + " para la reserva " + reservaCancelada.getCodigoConfirmacion());
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING,
+                    "Error al enviar el correo de cancelación para la reserva "
+                            + reservaCancelada.getCodigoConfirmacion() + ": " + e.getMessage(),
+                    e);
+        }
     }
 
     /**

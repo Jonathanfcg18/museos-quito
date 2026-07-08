@@ -20,8 +20,16 @@
       <a href="#contenido-principal" class="skip-link">Saltar al contenido principal</a>
 
       <header class="navbar" role="banner">
+        <%--
+          HAL: el logo (navbar-brand) y el enlace "Inicio" del menú apuntan a la
+          misma URL ("/"), lo que WAVE reporta como "Redundant link". Se oculta
+          el logo de la tecnología asistiva (aria-hidden + tabindex="-1"),
+          dejando el enlace "Inicio" del menú como único punto de acceso
+          equivalente por teclado/lector de pantalla. El logo sigue siendo
+          clicable con el mouse para usuarios videntes.
+        --%>
         <a href="${pageContext.request.contextPath}/" class="navbar-brand"
-          aria-label="Portal de Cultura Quito – Inicio">
+          aria-hidden="true" tabindex="-1">
           <span class="logo-icon" aria-hidden="true">🏛️</span>
           <div>
             <span class="brand-title">Portal de Cultura Quito</span>

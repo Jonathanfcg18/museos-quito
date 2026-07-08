@@ -6,8 +6,15 @@
 
 <div class="container">
 
-    <nav class="breadcrumb">
-        <a href="${pageContext.request.contextPath}/">Inicio</a>
+    <%--
+      HAL: el enlace "Inicio" del menú superior y el "Inicio" de esta miga de
+      pan apuntan a la misma URL ("/") con el mismo texto, lo que WAVE cuenta
+      como enlace redundante. Se añade un aria-label distinto (sin cambiar el
+      texto visible) para que ambos enlaces tengan un nombre accesible propio
+      acorde a su contexto (menú de navegación vs. ruta de navegación).
+    --%>
+    <nav class="breadcrumb" aria-label="Ruta de navegación">
+        <a href="${pageContext.request.contextPath}/" aria-label="Volver a la página de inicio">Inicio</a>
         <span>›</span>
         <a href="${pageContext.request.contextPath}/reservas/mis-reservas">
             Mis Reservas
@@ -67,7 +74,17 @@
                     <c:set var="disponible"
                            value="${franja.hayCupos() and not esActual}"/>
 
-                    <div class="franja-item
+                    <%--
+                      HAL: antes era un <div onclick="..."> — un div no es
+                      focuseable ni operable por teclado de forma nativa, por lo
+                      que WAVE marca cada uno como "Device dependent event
+                      handler" (41 alertas: 1 por cada franja renderizada).
+                      Se cambia a <button type="button">: los botones nativos
+                      reciben foco con Tab y el navegador dispara el mismo
+                      evento click al presionar Enter/Espacio, sin necesitar
+                      handlers adicionales de teclado.
+                    --%>
+                    <button type="button" class="franja-item
                         <c:choose>
                             <c:when test='${esActual}'>franja-agotada</c:when>
                             <c:when test='${disponible}'>franja-disponible</c:when>
@@ -78,15 +95,16 @@
                          data-inicio="${franja.horaInicio}"
                          data-fin="${franja.horaFin}"
                          data-cupos="${franja.cuposDisponibles}"
+                         ${disponible ? '' : 'disabled="disabled" aria-disabled="true"'}
                          onclick="<c:if test='${disponible}'>seleccionarFranja(this)</c:if>">
 
-                        <div class="franja-info">
+                        <span class="franja-info">
                             <span class="franja-fecha">📅 ${franja.fecha}</span>
                             <span class="franja-hora">
                                 🕐 ${franja.horaInicio} – ${franja.horaFin}
                             </span>
-                        </div>
-                        <div class="franja-estado">
+                        </span>
+                        <span class="franja-estado">
                             <c:choose>
                                 <c:when test="${esActual}">
                                     <span class="tipo-badge tipo-permanente">Horario actual</span>
@@ -100,8 +118,8 @@
                                     <span class="cupos-agotados">🚫 Agotado</span>
                                 </c:otherwise>
                             </c:choose>
-                        </div>
-                    </div>
+                        </span>
+                    </button>
                 </c:forEach>
             </div>
         </div>

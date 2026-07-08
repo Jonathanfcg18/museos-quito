@@ -22,7 +22,9 @@
     <div class="filtros-bar">
         <form method="get" action="${pageContext.request.contextPath}/museos" class="form-busqueda">
             <div class="input-group">
-                <input type="text" name="busqueda" placeholder="Buscar museo por nombre..."
+                <%-- HAL: el input de búsqueda no tenía label asociado ("Missing form label") --%>
+                <label for="busqueda-museo" class="visually-hidden">Buscar museo por nombre</label>
+                <input type="text" id="busqueda-museo" name="busqueda" placeholder="Buscar museo por nombre..."
                        value="${not empty busqueda ? busqueda : ''}"
                        class="input-busqueda"/>
                 <button type="submit" class="btn btn-primary">🔍 Buscar</button>
@@ -51,6 +53,9 @@
     </div>
 
     <!-- ===== Lista de Museos (Tarjetas) ===== -->
+    <%-- HAL: se agrega un H2 antes de los H3 (títulos de cada museo) para no
+         saltar de nivel de encabezado (H1 → H3). Visualmente oculto. --%>
+    <h2 class="visually-hidden">Catálogo de museos</h2>
     <c:choose>
         <c:when test="${empty museos}">
             <div class="empty-state">

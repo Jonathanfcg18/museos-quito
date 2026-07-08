@@ -11,6 +11,11 @@
     <p>Consulta, filtra, cancela o modifica tus reservas.</p>
   </div>
 
+  <%-- HAL: se agrega un H2 antes de cualquier H3 (estados vacíos) para no
+       saltar de nivel de encabezado (H1 → H3). Es visualmente oculto porque
+       no se necesita un título visible adicional en esta pantalla. --%>
+  <h2 class="visually-hidden">Listado de reservas</h2>
+
   <%--
     HAL-06: El filtro se persiste como parámetro GET en la URL.
     Al recargar la página, el servidor lee ?estado= y lo mantiene activo.
